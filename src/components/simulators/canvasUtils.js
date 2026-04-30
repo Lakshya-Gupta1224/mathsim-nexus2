@@ -46,6 +46,9 @@ export function drawGrid(ctx, w, h, xScale, yScale, ox, oy, step = 1) {
     const py = oy - gy * yScale;
     ctx.beginPath(); ctx.moveTo(0, py); ctx.lineTo(w, py); ctx.stroke();
   }
+  
+  // Automatically draw axis labels for all simulators
+  drawAxisLabels(ctx, w, h, ox, oy, xScale, yScale);
 }
 
 export function drawAxes(ctx, w, h, ox, oy) {
@@ -71,6 +74,7 @@ export function drawAxisLabels(ctx, w, h, ox, oy, xScale, yScale, xLabel = 'x', 
   const maxX = Math.ceil((w - ox) / xScale) + 1;
 
   // X-axis ticks & labels
+  ctx.textAlign = 'center';
   for (let i = minX - (minX % labelStep); i <= maxX; i += labelStep) {
     if (i === 0) continue; // skip origin to avoid overlap
     const px = ox + i * xScale;
@@ -80,15 +84,20 @@ export function drawAxisLabels(ctx, w, h, ox, oy, xScale, yScale, xLabel = 'x', 
     ctx.strokeStyle = AXIS_COLOR;
     ctx.lineWidth = 1;
     ctx.stroke();
+    
+    // Clamp to screen bounds
+    let textY = oy + 15;
+    if (textY < 20) textY = 20;
+    if (textY > h - 10) textY = h - 10;
+    
     // format to avoid long decimals
-    ctx.fillText(Number.isInteger(i) ? i.toString() : i.toFixed(1), px, oy + 15);
+    ctx.fillText(Number.isInteger(i) ? i.toString() : i.toFixed(1), px, textY);
   }
   
   const minY = Math.floor((oy - h) / yScale) - 1;
   const maxY = Math.ceil(oy / yScale) + 1;
 
   // Y-axis ticks & labels
-  ctx.textAlign = 'right';
   for (let i = minY - (minY % labelStep); i <= maxY; i += labelStep) {
     if (i === 0) continue;
     const py = oy - i * yScale;
@@ -96,15 +105,34 @@ export function drawAxisLabels(ctx, w, h, ox, oy, xScale, yScale, xLabel = 'x', 
     ctx.moveTo(ox - 3, py);
     ctx.lineTo(ox + 3, py);
     ctx.stroke();
-    ctx.fillText(Number.isInteger(i) ? i.toString() : i.toFixed(1), ox - 10, py + 4);
+    
+    let textX = ox - 10;
+    if (textX < 30) {
+      ctx.textAlign = 'left';
+      textX = 10;
+    } else if (textX > w - 10) {
+      ctx.textAlign = 'right';
+      textX = w - 10;
+    } else {
+      ctx.textAlign = 'right';
+    }
+    
+    ctx.fillText(Number.isInteger(i) ? i.toString() : i.toFixed(1), textX, py + 4);
   }
   
   // Axis labels
-  ctx.textAlign = 'center';
   ctx.font = 'bold 14px monospace';
-  ctx.fillText(xLabel, w - 20, oy - 20);
+  
   ctx.textAlign = 'right';
-  ctx.fillText(yLabel, ox - 20, 15);
+  let xLabelY = oy - 20;
+  if (xLabelY < 20) xLabelY = 20;
+  if (xLabelY > h - 20) xLabelY = h - 20;
+  ctx.fillText(xLabel, w - 20, xLabelY);
+  
+  let yLabelX = ox - 20;
+  if (yLabelX < 30) yLabelX = 30;
+  if (yLabelX > w - 20) yLabelX = w - 20;
+  ctx.fillText(yLabel, yLabelX, 20);
 }
 
 export function plotFunction(ctx, fn, xMin, xMax, steps, ox, oy, xScale, yScale, color, lineWidth = 2) {

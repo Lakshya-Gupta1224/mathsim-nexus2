@@ -4,6 +4,7 @@ import { SIMULATOR_META, MARBLE_SIMS, BOAT_SIMS, CURVE_FN_FACTORIES } from '../s
 import SimulatorCanvas from './SimulatorCanvas';
 import MarbleOverlay from './simulators/MarbleOverlay';
 import VectorFieldBoat from './simulators/VectorFieldBoat';
+import { generateDynamicQuiz } from '../utils/aiQuizGenerator';
 
 export default function SimulatorView({ user, simulator, onBack }) {
   const initialValues = useMemo(() => {
@@ -13,6 +14,12 @@ export default function SimulatorView({ user, simulator, onBack }) {
   }, [simulator.sliders]);
 
   const [values, setValues] = useState(initialValues);
+
+  const [bounds, setBounds] = useState(() => {
+    const bds = {};
+    simulator.sliders.forEach(s => { bds[s.key] = { min: s.min, max: s.max }; });
+    return bds;
+  });
   const [interactionCount, setInteractionCount] = useState(0);
   const [mastery, setMastery] = useState(0);
 
@@ -20,6 +27,10 @@ export default function SimulatorView({ user, simulator, onBack }) {
   const [isQuizMode, setIsQuizMode] = useState(false);
   const [quizState, setQuizState] = useState({ answered: false, correct: false, selected: null });
   const meta = SIMULATOR_META[simulator.id];
+  const [dynamicQuiz, setDynamicQuiz] = useState(null);
+  const [isGeneratingQuiz, setIsGeneratingQuiz] = useState(false);
+  const [quizError, setQuizError] = useState(null);
+  const activeQuiz = dynamicQuiz || meta;
 
   // Mode: 'params' | 'quiz' | 'marble' | 'boat'
   const [mode, setMode] = useState('params');
@@ -44,7 +55,7 @@ export default function SimulatorView({ user, simulator, onBack }) {
   // Quiz Logic
   const handleAnswer = (option) => {
     if (quizState.answered) return;
-    const isCorrect = option === meta.answer;
+    const isCorrect = option === activeQuiz?.answer;
     setQuizState({ answered: true, correct: isCorrect, selected: option });
 
     if (isCorrect) {
@@ -52,6 +63,29 @@ export default function SimulatorView({ user, simulator, onBack }) {
       const currentMastery = u?.masteryScores?.[simulator.id] || 0;
       updateUserStats(user.id, { masteryScores: { ...(u?.masteryScores || {}), [simulator.id]: currentMastery + 20 } });
       setMastery(currentMastery + 20);
+    }
+  };
+
+  const handleGenerateQuiz = async () => {
+    setIsGeneratingQuiz(true);
+    setQuizError(null);
+    try {
+      const newQuiz = await generateDynamicQuiz(simulator);
+      setDynamicQuiz(newQuiz);
+      setQuizState({ answered: false, correct: false, selected: null });
+    } catch (err) {
+      let msg = err.message;
+      if (msg.includes('API Key missing')) {
+        const key = prompt('Please enter your Gemini API Key:');
+        if (key) {
+          localStorage.setItem('GEMINI_API_KEY', key);
+          handleGenerateQuiz();
+          return;
+        }
+      }
+      setQuizError(msg);
+    } finally {
+      setIsGeneratingQuiz(false);
     }
   };
 
@@ -154,7 +188,10 @@ export default function SimulatorView({ user, simulator, onBack }) {
                   <p className="text-slate-500 text-xs">{simulator.description}</p>
                 </div>
                 <div className="space-y-5">
-                  {simulator.sliders.map(slider => (
+                  {simulator.sliders.map(slider => {
+                    const sMin = bounds[slider.key]?.min ?? slider.min;
+                    const sMax = bounds[slider.key]?.max ?? slider.max;
+                    return (
                     <div key={slider.key}>
                       <div className="flex items-center justify-between mb-2">
                         <label className="text-xs text-slate-300">{slider.label}</label>
@@ -165,18 +202,29 @@ export default function SimulatorView({ user, simulator, onBack }) {
                         </span>
                       </div>
                       <input
-                        type="range" min={slider.min} max={slider.max} step={slider.step}
+                        type="range" min={sMin} max={sMax} step={slider.step}
                         value={values[slider.key]} onChange={e => handleSliderChange(slider.key, e.target.value)}
                         className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
                         style={{
-                          background: `linear-gradient(to right, ${simulator.accent} 0%, ${simulator.accent} ${((values[slider.key] - slider.min) / (slider.max - slider.min)) * 100}%, rgba(255,255,255,0.1) ${((values[slider.key] - slider.min) / (slider.max - slider.min)) * 100}%, rgba(255,255,255,0.1) 100%)`
+                          background: `linear-gradient(to right, ${simulator.accent} 0%, ${simulator.accent} ${((values[slider.key] - sMin) / (sMax - sMin)) * 100}%, rgba(255,255,255,0.1) ${((values[slider.key] - sMin) / (sMax - sMin)) * 100}%, rgba(255,255,255,0.1) 100%)`
                         }}
                       />
                       <div className="flex justify-between text-slate-600 text-xs mt-1">
-                        <span>{slider.min}</span><span>{slider.max}</span>
+                        <input 
+                          type="number"
+                          value={sMin}
+                          onChange={(e) => setBounds(prev => ({ ...prev, [slider.key]: { ...prev[slider.key], min: parseFloat(e.target.value) || 0 } }))}
+                          className="bg-transparent border-b border-transparent hover:border-slate-700 focus:border-cyan-500 outline-none w-16 text-left appearance-none"
+                        />
+                        <input 
+                          type="number"
+                          value={sMax}
+                          onChange={(e) => setBounds(prev => ({ ...prev, [slider.key]: { ...prev[slider.key], max: parseFloat(e.target.value) || 0 } }))}
+                          className="bg-transparent border-b border-transparent hover:border-slate-700 focus:border-cyan-500 outline-none w-16 text-right appearance-none"
+                        />
                       </div>
                     </div>
-                  ))}
+                  )})}
                 </div>
                 <button
                   onClick={() => { const reset = {}; simulator.sliders.forEach(s => { reset[s.key] = s.default; }); setValues(reset); }}
@@ -189,14 +237,30 @@ export default function SimulatorView({ user, simulator, onBack }) {
 
             {mode === 'quiz' && (
               <div className="flex flex-col flex-1">
-                {meta && meta.examQuestion && meta.examQuestion !== 'N/A' ? (
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-white font-semibold text-sm">Knowledge Check</h2>
+                  <button 
+                    onClick={handleGenerateQuiz} 
+                    disabled={isGeneratingQuiz}
+                    className="text-xs bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 px-3 py-1.5 rounded transition flex items-center gap-1 disabled:opacity-50">
+                    {isGeneratingQuiz ? 'Generating...' : '✨ AI Quiz'}
+                  </button>
+                </div>
+                
+                {quizError && (
+                  <div className="p-3 mb-4 rounded bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
+                    {quizError}
+                  </div>
+                )}
+
+                {activeQuiz && activeQuiz.examQuestion && activeQuiz.examQuestion !== 'N/A' ? (
                   <>
-                    <h2 className="text-white font-semibold text-sm mb-4">{meta.examQuestion}</h2>
+                    <h2 className="text-white font-semibold text-sm mb-4 leading-relaxed">{activeQuiz.examQuestion}</h2>
                     <div className="space-y-3">
-                      {meta.options.map((opt, i) => {
+                      {activeQuiz.options.map((opt, i) => {
                         let btnClass = "w-full text-left p-3 rounded-lg border text-sm transition font-mono ";
                         if (!quizState.answered) btnClass += "border-white/10 hover:border-cyan-500/50 hover:bg-white/5 text-slate-300";
-                        else if (opt === meta.answer) btnClass += "border-green-500 bg-green-500/20 text-white";
+                        else if (opt === activeQuiz.answer) btnClass += "border-green-500 bg-green-500/20 text-white";
                         else if (opt === quizState.selected) btnClass += "border-red-500 bg-red-500/20 text-white";
                         else btnClass += "border-white/5 text-slate-600 opacity-50";
 
@@ -209,7 +273,7 @@ export default function SimulatorView({ user, simulator, onBack }) {
                     </div>
                     {quizState.answered && (
                       <div className="mt-6 p-4 rounded-lg bg-white/5 border border-white/10">
-                        <p className="text-xs text-slate-300 mb-3"><span className="text-cyan-400 font-bold">Theory:</span> {meta.theory}</p>
+                        <p className="text-xs text-slate-300 mb-3"><span className="text-cyan-400 font-bold">Theory:</span> {activeQuiz.theory}</p>
                         <button onClick={() => setQuizState({answered: false, correct: false, selected: null})} className="w-full text-xs text-slate-500 hover:text-white border border-white/10 rounded py-2 transition">
                           Retry Question
                         </button>
@@ -218,7 +282,7 @@ export default function SimulatorView({ user, simulator, onBack }) {
                   </>
                 ) : (
                   <div className="flex-1 flex items-center justify-center text-center">
-                    <p className="text-slate-500 text-sm">No quiz data available for this visualizer yet.</p>
+                    <p className="text-slate-500 text-sm">No quiz data available for this visualizer yet. Click "AI Quiz" to generate one!</p>
                   </div>
                 )}
               </div>
@@ -241,7 +305,10 @@ export default function SimulatorView({ user, simulator, onBack }) {
                 </div>
                 {/* Sliders still accessible in marble mode */}
                 <div className="space-y-4">
-                  {simulator.sliders.map(slider => (
+                  {simulator.sliders.map(slider => {
+                    const sMin = bounds[slider.key]?.min ?? slider.min;
+                    const sMax = bounds[slider.key]?.max ?? slider.max;
+                    return (
                     <div key={slider.key}>
                       <div className="flex items-center justify-between mb-1">
                         <label className="text-xs text-slate-400">{slider.label}</label>
@@ -252,15 +319,15 @@ export default function SimulatorView({ user, simulator, onBack }) {
                         </span>
                       </div>
                       <input
-                        type="range" min={slider.min} max={slider.max} step={slider.step}
+                        type="range" min={sMin} max={sMax} step={slider.step}
                         value={values[slider.key]} onChange={e => handleSliderChange(slider.key, e.target.value)}
                         className="w-full h-1 rounded-full appearance-none cursor-pointer"
                         style={{
-                          background: `linear-gradient(to right, ${simulator.accent}80 0%, ${simulator.accent}80 ${((values[slider.key] - slider.min) / (slider.max - slider.min)) * 100}%, rgba(255,255,255,0.08) ${((values[slider.key] - slider.min) / (slider.max - slider.min)) * 100}%, rgba(255,255,255,0.08) 100%)`
+                          background: `linear-gradient(to right, ${simulator.accent}80 0%, ${simulator.accent}80 ${((values[slider.key] - sMin) / (sMax - sMin)) * 100}%, rgba(255,255,255,0.08) ${((values[slider.key] - sMin) / (sMax - sMin)) * 100}%, rgba(255,255,255,0.08) 100%)`
                         }}
                       />
                     </div>
-                  ))}
+                  )})}
                 </div>
               </div>
             )}
@@ -281,7 +348,10 @@ export default function SimulatorView({ user, simulator, onBack }) {
                 </div>
                 {/* Sliders for adjusting the field */}
                 <div className="space-y-4">
-                  {simulator.sliders.map(slider => (
+                  {simulator.sliders.map(slider => {
+                    const sMin = bounds[slider.key]?.min ?? slider.min;
+                    const sMax = bounds[slider.key]?.max ?? slider.max;
+                    return (
                     <div key={slider.key}>
                       <div className="flex items-center justify-between mb-1">
                         <label className="text-xs text-slate-400">{slider.label}</label>
@@ -292,15 +362,15 @@ export default function SimulatorView({ user, simulator, onBack }) {
                         </span>
                       </div>
                       <input
-                        type="range" min={slider.min} max={slider.max} step={slider.step}
+                        type="range" min={sMin} max={sMax} step={slider.step}
                         value={values[slider.key]} onChange={e => handleSliderChange(slider.key, e.target.value)}
                         className="w-full h-1 rounded-full appearance-none cursor-pointer"
                         style={{
-                          background: `linear-gradient(to right, ${simulator.accent}80 0%, ${simulator.accent}80 ${((values[slider.key] - slider.min) / (slider.max - slider.min)) * 100}%, rgba(255,255,255,0.08) ${((values[slider.key] - slider.min) / (slider.max - slider.min)) * 100}%, rgba(255,255,255,0.08) 100%)`
+                          background: `linear-gradient(to right, ${simulator.accent}80 0%, ${simulator.accent}80 ${((values[slider.key] - sMin) / (sMax - sMin)) * 100}%, rgba(255,255,255,0.08) ${((values[slider.key] - sMin) / (sMax - sMin)) * 100}%, rgba(255,255,255,0.08) 100%)`
                         }}
                       />
                     </div>
-                  ))}
+                  )})}
                 </div>
               </div>
             )}
