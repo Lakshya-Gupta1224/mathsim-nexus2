@@ -39,7 +39,9 @@ export default function AreaCurveCanvas({ values, accent }) {
     labelAt(ctx, 'a', ox + lo * sx - 5, oy + 14, '#22d3ee', 12);
     labelAt(ctx, 'b', ox + hi * sx - 5, oy + 14, '#f97316', 12);
 
-    plotFunction(ctx, f, -w/(2*sx)-1, w/(2*sx)+1, 400, ox, oy, sx, sy, accent, 2.5);
+    const xMin = (0 - ox) / sx;
+    const xMax = (w - ox) / sx;
+    plotFunction(ctx, f, xMin, xMax, 400, ox, oy, sx, sy, accent, 2.5);
 
     labelAt(ctx, `∫ₐᵇ x² dx`, 10, 20, accent, 14);
     labelAt(ctx, `a = ${a.toFixed(1)},  b = ${b.toFixed(1)}`, 10, 40, 'rgba(255,255,255,0.5)', 12);

@@ -18,8 +18,10 @@ export default function SystemSolverCanvas({ values, accent }) {
     clearCanvas(ctx, w, h);
     drawGrid(ctx, w, h, s, s, ox, oy);
     drawAxes(ctx, w, h, ox, oy);
-    plotFunction(ctx, x => a1 * x + b1, -w / (2 * s) - 1, w / (2 * s) + 1, 300, ox, oy, s, s, accent, 2.5);
-    plotFunction(ctx, x => a2 * x + b2, -w / (2 * s) - 1, w / (2 * s) + 1, 300, ox, oy, s, s, '#f97316', 2.5);
+    const xMin = (0 - ox) / s;
+    const xMax = (w - ox) / s;
+    plotFunction(ctx, x => a1 * x + b1, xMin, xMax, 300, ox, oy, s, s, accent, 2.5);
+    plotFunction(ctx, x => a2 * x + b2, xMin, xMax, 300, ox, oy, s, s, '#f97316', 2.5);
     if (ix !== null) {
       const px = ox + ix * s, py = oy - iy * s;
       drawDot(ctx, px, py, 6, '#ffffff');

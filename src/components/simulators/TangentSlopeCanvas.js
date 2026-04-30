@@ -17,8 +17,10 @@ export default function TangentSlopeCanvas({ values, accent }) {
     drawGrid(ctx, w, h, s, s, ox, oy);
     drawAxes(ctx, w, h, ox, oy);
 
-    plotFunction(ctx, f, -w/(2*s)-1, w/(2*s)+1, 400, ox, oy, s, s, 'rgba(255,255,255,0.3)', 1.5);
-    plotFunction(ctx, t => slope * (t - x) + yAt, -w/(2*s)-1, w/(2*s)+1, 200, ox, oy, s, s, accent, 2.5);
+    const xMin = (0 - ox) / s;
+    const xMax = (w - ox) / s;
+    plotFunction(ctx, f, xMin, xMax, 400, ox, oy, s, s, 'rgba(255,255,255,0.3)', 1.5);
+    plotFunction(ctx, t => slope * (t - x) + yAt, xMin, xMax, 200, ox, oy, s, s, accent, 2.5);
 
     const px = ox + x * s, py = oy - yAt * s;
     drawDot(ctx, px, py, 6, accent);

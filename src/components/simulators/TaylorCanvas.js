@@ -26,8 +26,10 @@ export default function TaylorCanvas({ values, accent }) {
     drawGrid(ctx, w, h, sx, sy, ox, oy);
     drawAxes(ctx, w, h, ox, oy);
 
-    plotFunction(ctx, Math.sin, -w/(2*sx), w/(2*sx), 600, ox, oy, sx, sy, 'rgba(255,255,255,0.2)', 1.5);
-    plotFunction(ctx, x => taylorSin(x, terms), -w/(2*sx), w/(2*sx), 600, ox, oy, sx, sy, accent, 2.5);
+    const xMin = (0 - ox) / sx;
+    const xMax = (w - ox) / sx;
+    plotFunction(ctx, Math.sin, xMin, xMax, 600, ox, oy, sx, sy, 'rgba(255,255,255,0.2)', 1.5);
+    plotFunction(ctx, x => taylorSin(x, terms), xMin, xMax, 600, ox, oy, sx, sy, accent, 2.5);
 
     labelAt(ctx, `Degree n = ${n}  (${terms} terms)`, 10, 20, accent, 13);
     labelAt(ctx, `sin(x) ≈ x − x³/3! + x⁵/5! − ...`, 10, 38, 'rgba(255,255,255,0.3)', 11);

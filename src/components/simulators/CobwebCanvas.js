@@ -14,8 +14,10 @@ export default function CobwebCanvas({ values, accent }) {
     drawAxes(ctx, w, h, ox, oy);
     
     const f = x => r * x * (1 - x);
-    plotFunction(ctx, x => x, 0, 1, 100, ox, oy, s, s, 'rgba(255,255,255,0.2)', 1);
-    plotFunction(ctx, f, 0, 1, 100, ox, oy, s, s, '#22d3ee', 2);
+    const xMin = (0 - ox) / s;
+    const xMax = (w - ox) / s;
+    plotFunction(ctx, x => x, xMin, xMax, 100, ox, oy, s, s, 'rgba(255,255,255,0.2)', 1);
+    plotFunction(ctx, f, xMin, xMax, 100, ox, oy, s, s, '#22d3ee', 2);
     
     ctx.strokeStyle = accent; 
     ctx.lineWidth = 1; 

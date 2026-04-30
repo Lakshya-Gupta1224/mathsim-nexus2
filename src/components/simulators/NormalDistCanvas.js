@@ -31,7 +31,9 @@ export default function NormalDistCanvas({ values, accent }) {
     shade(mu - 2 * sigma, mu + 2 * sigma, `${accent}18`);
     shade(mu - sigma, mu + sigma, `${accent}30`);
 
-    plotFunction(ctx, f, mu - 4 * sigma, mu + 4 * sigma, 500, ox, oy, sx, sy, accent, 2.5);
+    const xMin = (0 - ox) / sx;
+    const xMax = (w - ox) / sx;
+    plotFunction(ctx, f, xMin, xMax, 500, ox, oy, sx, sy, accent, 2.5);
 
     ctx.setLineDash([5, 5]); ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1;
     const mux = ox + mu * sx;

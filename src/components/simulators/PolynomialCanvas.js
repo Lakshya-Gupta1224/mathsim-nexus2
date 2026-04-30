@@ -13,7 +13,9 @@ export function PolynomialCanvas({ values, accent }) {
     clearCanvas(ctx, w, h);
     drawGrid(ctx, w, h, s, s, ox, oy);
     drawAxes(ctx, w, h, ox, oy);
-    plotFunction(ctx, fn, -w / (2 * s) - 1, w / (2 * s) + 1, 500, ox, oy, s, s, accent, 2.5);
+    const xMin = (0 - ox) / s;
+    const xMax = (w - ox) / s;
+    plotFunction(ctx, fn, xMin, xMax, 500, ox, oy, s, s, accent, 2.5);
     [r1, r2, r3, r4].forEach(r => drawDot(ctx, ox + (r + shiftX) * s, oy - shiftY * s, 5, accent));
     labelAt(ctx, `Roots: ${[r1,r2,r3,r4].map(r=>(r + shiftX).toFixed(1)).join(', ')}`, 10, 20, accent, 12);
   }, [r1, r2, r3, r4, shiftX, shiftY, accent]);

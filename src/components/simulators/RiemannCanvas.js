@@ -32,7 +32,9 @@ export default function RiemannCanvas({ values, accent }) {
       ctx.strokeRect(rectX, oy - rectH, dx * sx, rectH);
     }
 
-    plotFunction(ctx, f, a, b, 400, ox, oy, sx, sy, accent, 2.5);
+    const xMin = (0 - ox) / sx;
+    const xMax = (w - ox) / sx;
+    plotFunction(ctx, f, xMin, xMax, 400, ox, oy, sx, sy, accent, 2.5);
 
     const error = Math.abs(exact - sum);
     labelAt(ctx, `n = ${n} rectangles`, 10, 20, accent, 13);

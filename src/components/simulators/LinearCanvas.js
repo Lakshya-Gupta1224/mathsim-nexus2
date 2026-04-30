@@ -11,7 +11,9 @@ export default function LinearCanvas({ values, accent }) {
     clearCanvas(ctx, w, h);
     drawGrid(ctx, w, h, s, s, ox, oy);
     drawAxes(ctx, w, h, ox, oy);
-    plotFunction(ctx, x => m * (x - shiftX) + c + shiftY, -w / (2 * s) - 1, w / (2 * s) + 1, 300, ox, oy, s, s, accent, 2.5);
+    const xMin = (0 - ox) / s;
+    const xMax = (w - ox) / s;
+    plotFunction(ctx, x => m * (x - shiftX) + c + shiftY, xMin, xMax, 300, ox, oy, s, s, accent, 2.5);
     labelAt(ctx, `y = ${m.toFixed(2)}x + ${c.toFixed(2)}`, 10, 20, accent, 13);
     labelAt(ctx, `slope = ${m.toFixed(2)}`, 10, 38, 'rgba(255,255,255,0.5)', 11);
     labelAt(ctx, `y-int = ${c.toFixed(2)}`, 10, 54, 'rgba(255,255,255,0.5)', 11);

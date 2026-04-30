@@ -16,9 +16,11 @@ export default function LimitCanvas({ values, accent }) {
     drawGrid(ctx, w, cv, s, s, ox, oy);
     drawAxes(ctx, w, cv, ox, oy);
 
-    plotFunction(ctx, f, -w/(2*s)-1, w/(2*s)+1, 400, ox, oy, s, s, 'rgba(255,255,255,0.25)', 1.5);
-    plotFunction(ctx, t => f(x0) + secantSlope * (t - x0), -w/(2*s)-1, w/(2*s)+1, 200, ox, oy, s, s, accent, 2.5);
-    plotFunction(ctx, t => f(x0) + trueSlope * (t - x0), -w/(2*s)-1, w/(2*s)+1, 200, ox, oy, s, s, 'rgba(255,255,255,0.2)', 1.5);
+    const xMin = (0 - ox) / s;
+    const xMax = (w - ox) / s;
+    plotFunction(ctx, f, xMin, xMax, 400, ox, oy, s, s, 'rgba(255,255,255,0.25)', 1.5);
+    plotFunction(ctx, t => f(x0) + secantSlope * (t - x0), xMin, xMax, 200, ox, oy, s, s, accent, 2.5);
+    plotFunction(ctx, t => f(x0) + trueSlope * (t - x0), xMin, xMax, 200, ox, oy, s, s, 'rgba(255,255,255,0.2)', 1.5);
 
     const p1x = ox + x0 * s, p1y = oy - f(x0) * s;
     const p2x = ox + (x0 + h) * s, p2y = oy - f(x0 + h) * s;
