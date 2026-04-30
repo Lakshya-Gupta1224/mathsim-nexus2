@@ -1,7 +1,7 @@
 import React from 'react';
 import useInteractiveCanvas from './useInteractiveCanvas';
 import ZoomControls from './ZoomControls';
-import { clearCanvas, drawAxes, plotFunction } from './canvasUtils';
+import { clearCanvas, drawAxes, plotFunction, drawGrid } from './canvasUtils';
 
 export default function CobwebCanvas({ values, accent }) {
   const { r, x0 } = values;
@@ -10,6 +10,7 @@ export default function CobwebCanvas({ values, accent }) {
     const s = Math.min(w, h) * 0.7 * zm;
     const ox = w * 0.1 + panX, oy = h * 0.9 + panY; 
     clearCanvas(ctx, w, h); 
+    drawGrid(ctx, w, h, s, s, ox, oy, 1);
     drawAxes(ctx, w, h, ox, oy);
     
     const f = x => r * x * (1 - x);

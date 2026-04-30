@@ -125,8 +125,8 @@ export default function Lorenz3DCanvas({ values, accent }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="w-full h-96 rounded-xl overflow-hidden" style={{ background: '#080d18' }}>
-        <Canvas camera={{ position: [5, 3, 5], fov: 50 }} dpr={[1, 2]}>
+      <div className="w-full rounded-xl overflow-hidden" style={{ height: 'calc(100vh - 210px)', minHeight: 400, background: '#080d18' }}>
+        <Canvas camera={{ position: [4, 2.5, 4], fov: 50 }} dpr={[1, 2]}>
           <ambientLight intensity={0.2} />
           <pointLight position={[5, 10, 5]} intensity={0.6} color="#ffffff" />
           <pointLight position={[-3, 5, -3]} intensity={0.3} color={accent} />

@@ -1,7 +1,7 @@
 import React from 'react';
 import useInteractiveCanvas from './useInteractiveCanvas';
 import ZoomControls from './ZoomControls';
-import { clearCanvas } from './canvasUtils';
+import { clearCanvas, drawGrid, drawAxes } from './canvasUtils';
 
 export default function ModuloCircleCanvas({ values, accent }) {
   const { n, m } = values;
@@ -9,6 +9,8 @@ export default function ModuloCircleCanvas({ values, accent }) {
   const { canvasRef, zoom, zoomIn, zoomOut, resetView } = useInteractiveCanvas((ctx, w, h, zm, panX, panY) => {
     const ox = w / 2 + panX, oy = h / 2 + panY, r = Math.min(w, h) * 0.4 * zm; 
     clearCanvas(ctx, w, h);
+    drawGrid(ctx, w, h, r, r, ox, oy, 1);
+    drawAxes(ctx, w, h, ox, oy);
     
     ctx.strokeStyle = `${accent}40`; 
     ctx.lineWidth = 1;

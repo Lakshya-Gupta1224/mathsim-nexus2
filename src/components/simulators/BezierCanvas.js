@@ -1,7 +1,7 @@
 import React from 'react';
 import useInteractiveCanvas from './useInteractiveCanvas';
 import ZoomControls from './ZoomControls';
-import { clearCanvas, drawAxes, drawDot } from './canvasUtils';
+import { clearCanvas, drawAxes, drawDot, drawGrid } from './canvasUtils';
 
 export default function BezierCanvas({ values, accent }) {
   const { cx, cy } = values;
@@ -9,6 +9,7 @@ export default function BezierCanvas({ values, accent }) {
   const { canvasRef, zoom, zoomIn, zoomOut, resetView } = useInteractiveCanvas((ctx, w, h, zm, panX, panY) => {
     const ox = w / 2 + panX, oy = h / 2 + panY, s = 80 * zm; 
     clearCanvas(ctx, w, h); 
+    drawGrid(ctx, w, h, s, s, ox, oy, 1);
     drawAxes(ctx, w, h, ox, oy);
     
     const p0 = { x: -2, y: -1 }, p1 = { x: cx, y: cy }, p2 = { x: 2, y: 1 };

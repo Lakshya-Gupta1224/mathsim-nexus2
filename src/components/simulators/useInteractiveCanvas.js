@@ -29,7 +29,7 @@ export default function useInteractiveCanvas(draw, deps) {
     const onWheel = (e) => {
       e.preventDefault();
       const factor = e.deltaY < 0 ? 1.12 : 1 / 1.12;
-      setZoom(z => Math.min(10, Math.max(0.2, z * factor)));
+      setZoom(z => Math.min(50, Math.max(0.02, z * factor)));
     };
     canvas.addEventListener('wheel', onWheel, { passive: false });
     return () => canvas.removeEventListener('wheel', onWheel);
@@ -81,11 +81,11 @@ export default function useInteractiveCanvas(draw, deps) {
   }, []);
 
   const zoomIn = useCallback(() => {
-    setZoom(z => Math.min(10, z * 1.3));
+    setZoom(z => Math.min(50, z * 1.3));
   }, []);
 
   const zoomOut = useCallback(() => {
-    setZoom(z => Math.max(0.2, z / 1.3));
+    setZoom(z => Math.max(0.02, z / 1.3));
   }, []);
 
   return { canvasRef, zoom, pan, resetView, zoomIn, zoomOut };

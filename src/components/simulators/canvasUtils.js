@@ -22,16 +22,28 @@ export function getTransform(w, h, baseScale, zoom = 1, panX = 0, panY = 0) {
 export function drawGrid(ctx, w, h, xScale, yScale, ox, oy, step = 1) {
   ctx.strokeStyle = GRID_COLOR;
   ctx.lineWidth = 1;
+
+  // Determine dynamic step based on scale to prevent a solid block of lines when zoomed out
+  let currentStep = step;
+  if (xScale < 15) currentStep = step * 5;
+  if (xScale < 3) currentStep = step * 25;
+  if (xScale > 100) currentStep = step / 2;
+
+  const minGx = Math.floor((-ox) / xScale) - 1;
+  const maxGx = Math.ceil((w - ox) / xScale) + 1;
+
   // vertical
-  for (let gx = -50; gx <= 50; gx += step) {
+  for (let gx = minGx - (minGx % currentStep); gx <= maxGx; gx += currentStep) {
     const px = ox + gx * xScale;
-    if (px < -10 || px > w + 10) continue;
     ctx.beginPath(); ctx.moveTo(px, 0); ctx.lineTo(px, h); ctx.stroke();
   }
+
+  const minGy = Math.floor((oy - h) / yScale) - 1;
+  const maxGy = Math.ceil(oy / yScale) + 1;
+
   // horizontal
-  for (let gy = -50; gy <= 50; gy += step) {
+  for (let gy = minGy - (minGy % currentStep); gy <= maxGy; gy += currentStep) {
     const py = oy - gy * yScale;
-    if (py < -10 || py > h + 10) continue;
     ctx.beginPath(); ctx.moveTo(0, py); ctx.lineTo(w, py); ctx.stroke();
   }
 }
@@ -50,29 +62,41 @@ export function drawAxisLabels(ctx, w, h, ox, oy, xScale, yScale, xLabel = 'x', 
   ctx.font = '12px monospace';
   ctx.textAlign = 'center';
   
+  let labelStep = 2;
+  if (xScale < 15) labelStep = 10;
+  if (xScale < 3) labelStep = 50;
+  if (xScale > 100) labelStep = 1;
+
+  const minX = Math.floor((-ox) / xScale) - 1;
+  const maxX = Math.ceil((w - ox) / xScale) + 1;
+
   // X-axis ticks & labels
-  for (let i = -20; i <= 20; i += 2) {
+  for (let i = minX - (minX % labelStep); i <= maxX; i += labelStep) {
+    if (i === 0) continue; // skip origin to avoid overlap
     const px = ox + i * xScale;
-    if (px < 0 || px > w) continue;
     ctx.beginPath();
     ctx.moveTo(px, oy - 3);
     ctx.lineTo(px, oy + 3);
     ctx.strokeStyle = AXIS_COLOR;
     ctx.lineWidth = 1;
     ctx.stroke();
-    ctx.fillText(i.toString(), px, oy + 15);
+    // format to avoid long decimals
+    ctx.fillText(Number.isInteger(i) ? i.toString() : i.toFixed(1), px, oy + 15);
   }
   
+  const minY = Math.floor((oy - h) / yScale) - 1;
+  const maxY = Math.ceil(oy / yScale) + 1;
+
   // Y-axis ticks & labels
   ctx.textAlign = 'right';
-  for (let i = -20; i <= 20; i += 2) {
+  for (let i = minY - (minY % labelStep); i <= maxY; i += labelStep) {
+    if (i === 0) continue;
     const py = oy - i * yScale;
-    if (py < 0 || py > h) continue;
     ctx.beginPath();
     ctx.moveTo(ox - 3, py);
     ctx.lineTo(ox + 3, py);
     ctx.stroke();
-    ctx.fillText(i.toString(), ox - 10, py + 4);
+    ctx.fillText(Number.isInteger(i) ? i.toString() : i.toFixed(1), ox - 10, py + 4);
   }
   
   // Axis labels

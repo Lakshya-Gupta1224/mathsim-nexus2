@@ -1,7 +1,7 @@
 import React from 'react';
 import useInteractiveCanvas from './useInteractiveCanvas';
 import ZoomControls from './ZoomControls';
-import { clearCanvas, drawAxes, plotFunction, labelAt } from './canvasUtils';
+import { clearCanvas, drawGrid, drawAxes, plotFunction, labelAt } from './canvasUtils';
 
 export default function NormalDistCanvas({ values, accent }) {
   const { mu, sigma } = values;
@@ -12,11 +12,7 @@ export default function NormalDistCanvas({ values, accent }) {
     const ox = w * 0.5 + panX, oy = h * 0.85 + panY;
     clearCanvas(ctx, w, h);
 
-    ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1;
-    for (let i = -10; i <= 10; i++) {
-      const px = ox + i * sx;
-      ctx.beginPath(); ctx.moveTo(px, 0); ctx.lineTo(px, h); ctx.stroke();
-    }
+    drawGrid(ctx, w, h, sx, sy * 0.1, ox, oy, 1);
     drawAxes(ctx, w, h, ox, oy);
 
     const shade = (lo, hi, color) => {

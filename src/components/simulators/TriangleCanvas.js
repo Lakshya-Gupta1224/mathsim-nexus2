@@ -1,7 +1,7 @@
 import React from 'react';
 import useInteractiveCanvas from './useInteractiveCanvas';
 import ZoomControls from './ZoomControls';
-import { clearCanvas, labelAt } from './canvasUtils';
+import { clearCanvas, labelAt, drawGrid, drawAxes } from './canvasUtils';
 
 export default function TriangleCanvas({ values, accent }) {
   const { a, b, C } = values;
@@ -14,6 +14,9 @@ export default function TriangleCanvas({ values, accent }) {
     clearCanvas(ctx, w, h);
     const scale = Math.min(w, h) * 0.28 * zm / Math.max(a, b, c);
     const cx = w / 2 + panX, cy = h * 0.6 + panY;
+
+    drawGrid(ctx, w, h, 35*zm, 35*zm, cx, cy, 1);
+    drawAxes(ctx, w, h, cx, cy);
 
     const vC = { x: cx - (b * scale) / 2, y: cy };
     const vB = { x: vC.x + b * scale, y: cy };

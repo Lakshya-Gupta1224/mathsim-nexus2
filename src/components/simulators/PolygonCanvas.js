@@ -1,7 +1,7 @@
 import React from 'react';
 import useInteractiveCanvas from './useInteractiveCanvas';
 import ZoomControls from './ZoomControls';
-import { clearCanvas, labelAt } from './canvasUtils';
+import { clearCanvas, labelAt, drawGrid, drawAxes } from './canvasUtils';
 
 export default function PolygonCanvas({ values, accent }) {
   const { n } = Math.round(values.n) ? { n: Math.round(values.n) } : values;
@@ -13,6 +13,10 @@ export default function PolygonCanvas({ values, accent }) {
   const { canvasRef, zoom, zoomIn, zoomOut, resetView } = useInteractiveCanvas((ctx, w, h, zm, panX, panY) => {
     clearCanvas(ctx, w, h);
     const cx = w / 2 + panX, cy = h / 2 + panY, r = Math.min(w, h) * 0.38 * zm;
+
+    // Grid and Axes
+    drawGrid(ctx, w, h, r / 2, r / 2, cx, cy, 1);
+    drawAxes(ctx, w, h, cx, cy);
 
     const angleStep = (2 * Math.PI) / sides;
     const startAngle = -Math.PI / 2;

@@ -1,7 +1,7 @@
 import React from 'react';
 import useInteractiveCanvas from './useInteractiveCanvas';
 import ZoomControls from './ZoomControls';
-import { clearCanvas, drawDot, labelAt } from './canvasUtils';
+import { clearCanvas, drawDot, labelAt, drawGrid, drawAxes } from './canvasUtils';
 
 export default function UnitCircleCanvas({ values, accent }) {
   const { theta } = values;
@@ -13,17 +13,9 @@ export default function UnitCircleCanvas({ values, accent }) {
     clearCanvas(ctx, w, h);
     const cx = w / 2 + panX, cy = h / 2 + panY, r = Math.min(w, h) * 0.38 * zm;
 
-    // Grid
-    ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1;
-    for (let i = -3; i <= 3; i++) {
-      ctx.beginPath(); ctx.moveTo(0, cy + i * r / 2); ctx.lineTo(w, cy + i * r / 2); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(cx + i * r / 2, 0); ctx.lineTo(cx + i * r / 2, h); ctx.stroke();
-    }
-
-    // Axes
-    ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, h); ctx.stroke();
+    // Grid & Axes
+    drawGrid(ctx, w, h, r / 2, r / 2, cx, cy, 1);
+    drawAxes(ctx, w, h, cx, cy);
 
     // Unit circle
     ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);

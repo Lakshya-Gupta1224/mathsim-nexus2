@@ -1,7 +1,7 @@
 import React from 'react';
 import useInteractiveCanvas from './useInteractiveCanvas';
 import ZoomControls from './ZoomControls';
-import { clearCanvas, drawAxes } from './canvasUtils';
+import { clearCanvas, drawAxes, drawGrid } from './canvasUtils';
 
 export default function PolarRoseCanvas({ values, accent }) {
   const { k } = values;
@@ -9,6 +9,7 @@ export default function PolarRoseCanvas({ values, accent }) {
   const { canvasRef, zoom, zoomIn, zoomOut, resetView } = useInteractiveCanvas((ctx, w, h, zm, panX, panY) => {
     const ox = w / 2 + panX, oy = h / 2 + panY, s = Math.min(w, h) * 0.4 * zm; 
     clearCanvas(ctx, w, h); 
+    drawGrid(ctx, w, h, s, s, ox, oy, 1);
     drawAxes(ctx, w, h, ox, oy);
     
     ctx.strokeStyle = accent; 

@@ -1,7 +1,7 @@
 import React from 'react';
 import useInteractiveCanvas from './useInteractiveCanvas';
 import ZoomControls from './ZoomControls';
-import { clearCanvas, drawAxes, plotFunction, labelAt } from './canvasUtils';
+import { clearCanvas, drawGrid, drawAxes, plotFunction, labelAt } from './canvasUtils';
 
 export default function RiemannCanvas({ values, accent }) {
   const { n } = values;
@@ -14,16 +14,8 @@ export default function RiemannCanvas({ values, accent }) {
     const ox = w * 0.1 + panX, oy = h * 0.85 + panY;
     clearCanvas(ctx, w, h);
 
-    ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1;
-    for (let i = -1; i <= 5; i++) {
-      ctx.beginPath(); ctx.moveTo(ox + i*sx, 0); ctx.lineTo(ox + i*sx, h); ctx.stroke();
-    }
-    for (let j = -1; j <= 2; j++) {
-      ctx.beginPath(); ctx.moveTo(0, oy - j*sy*0.5); ctx.lineTo(w, oy - j*sy*0.5); ctx.stroke();
-    }
-    ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.moveTo(0, oy); ctx.lineTo(w, oy); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(ox, 0); ctx.lineTo(ox, h); ctx.stroke();
+    drawGrid(ctx, w, h, sx, sy * 0.5, ox, oy, 1);
+    drawAxes(ctx, w, h, ox, oy);
 
     const dx = (b - a) / n;
     let sum = 0;

@@ -118,9 +118,9 @@ export default function TopographyCanvas({ values, accent }) {
   }, [a, b, cVal]);
 
   return (
-    <div className="w-full h-96 rounded-xl overflow-hidden" style={{ background: '#0a0f1a' }}>
+    <div className="w-full rounded-xl overflow-hidden" style={{ height: 'calc(100vh - 160px)', minHeight: 400, background: '#0a0f1a' }}>
       <Canvas
-        camera={{ position: [6, 4, 6], fov: 50 }}
+        camera={{ position: [5, 3.5, 5], fov: 50 }}
         dpr={[1, 2]}
       >
         <ambientLight intensity={0.3} />

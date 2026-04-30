@@ -1,7 +1,7 @@
 import React from 'react';
 import useInteractiveCanvas from './useInteractiveCanvas';
 import ZoomControls from './ZoomControls';
-import { clearCanvas, drawDot, labelAt } from './canvasUtils';
+import { clearCanvas, drawGrid, drawAxes, drawDot, labelAt } from './canvasUtils';
 
 function arrow(ctx, x1, y1, x2, y2, color, width = 2) {
   ctx.strokeStyle = color; ctx.lineWidth = width;
@@ -29,14 +29,8 @@ export default function VectorAdderCanvas({ values, accent }) {
     const scale = 25 * zm;
     const ox = w / 2 + panX, oy = h / 2 + panY;
 
-    ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1;
-    for (let i = -10; i <= 10; i++) {
-      ctx.beginPath(); ctx.moveTo(ox + i * scale, 0); ctx.lineTo(ox + i * scale, h); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(0, oy + i * scale); ctx.lineTo(w, oy + i * scale); ctx.stroke();
-    }
-    ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.moveTo(0, oy); ctx.lineTo(w, oy); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(ox, 0); ctx.lineTo(ox, h); ctx.stroke();
+    drawGrid(ctx, w, h, scale, scale, ox, oy, 1);
+    drawAxes(ctx, w, h, ox, oy);
 
     arrow(ctx, ox, oy, ox + v1x * scale, oy - v1y * scale, '#22d3ee', 2.5);
     arrow(ctx, ox + v1x * scale, oy - v1y * scale,

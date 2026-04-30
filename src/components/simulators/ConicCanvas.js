@@ -1,7 +1,7 @@
 import React from 'react';
 import useInteractiveCanvas from './useInteractiveCanvas';
 import ZoomControls from './ZoomControls';
-import { clearCanvas, drawAxes, drawDot } from './canvasUtils';
+import { clearCanvas, drawAxes, drawDot, drawGrid } from './canvasUtils';
 
 export default function ConicCanvas({ values, accent }) {
   const { e } = values;
@@ -9,6 +9,7 @@ export default function ConicCanvas({ values, accent }) {
   const { canvasRef, zoom, zoomIn, zoomOut, resetView } = useInteractiveCanvas((ctx, w, h, zm, panX, panY) => {
     const ox = w / 2 + panX, oy = h / 2 + panY, s = 20 * zm; 
     clearCanvas(ctx, w, h); 
+    drawGrid(ctx, w, h, s, s, ox, oy, 1);
     drawAxes(ctx, w, h, ox, oy);
     
     ctx.strokeStyle = 'rgba(255,255,255,0.3)'; 

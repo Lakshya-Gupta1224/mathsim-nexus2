@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import useInteractiveCanvas from './useInteractiveCanvas';
 import ZoomControls from './ZoomControls';
-import { clearCanvas, drawAxes, drawDot, labelAt } from './canvasUtils';
+import { clearCanvas, drawGrid, drawAxes, drawDot, labelAt } from './canvasUtils';
 
 function seededRand(seed) {
   let s = seed;
@@ -39,11 +39,7 @@ export default function RegressionCanvas({ values, accent }) {
     const sx = 30 * zm, sy = 20 * zm;
     const ox = w / 2 + panX, oy = h / 2 + panY;
     clearCanvas(ctx, w, h);
-    ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1;
-    for (let i = -8; i <= 8; i++) {
-      ctx.beginPath(); ctx.moveTo(ox + i * sx, 0); ctx.lineTo(ox + i * sx, h); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(0, oy + i * sy); ctx.lineTo(w, oy + i * sy); ctx.stroke();
-    }
+    drawGrid(ctx, w, h, sx, sy, ox, oy, 1);
     drawAxes(ctx, w, h, ox, oy);
 
     points.forEach(p => drawDot(ctx, ox + p.x * sx, oy - p.y * sy, 4, `${accent}90`));
