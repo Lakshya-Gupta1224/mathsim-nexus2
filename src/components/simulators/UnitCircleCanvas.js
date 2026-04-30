@@ -1,5 +1,6 @@
 import React from 'react';
-import useCanvas from './useCanvas';
+import useInteractiveCanvas from './useInteractiveCanvas';
+import ZoomControls from './ZoomControls';
 import { clearCanvas, drawDot, labelAt } from './canvasUtils';
 
 export default function UnitCircleCanvas({ values, accent }) {
@@ -8,9 +9,9 @@ export default function UnitCircleCanvas({ values, accent }) {
   const cosV = Math.cos(rad);
   const sinV = Math.sin(rad);
 
-  const canvasRef = useCanvas((ctx, w, h) => {
+  const { canvasRef, zoom, zoomIn, zoomOut, resetView } = useInteractiveCanvas((ctx, w, h, zm, panX, panY) => {
     clearCanvas(ctx, w, h);
-    const cx = w / 2, cy = h / 2, r = Math.min(w, h) * 0.38;
+    const cx = w / 2 + panX, cy = h / 2 + panY, r = Math.min(w, h) * 0.38 * zm;
 
     // Grid
     ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1;
@@ -57,13 +58,16 @@ export default function UnitCircleCanvas({ values, accent }) {
     labelAt(ctx, `sin(θ) = ${sinV.toFixed(3)}`, 10, 54, '#f97316', 12);
     labelAt(ctx, `tan(θ) = ${Math.abs(cosV) > 0.01 ? (sinV / cosV).toFixed(3) : '±∞'}`, 10, 70, accent, 12);
 
-    // cos label on x axis
     ctx.fillStyle = '#22d3ee'; ctx.font = '10px monospace';
     ctx.fillText(`cos=${cosV.toFixed(2)}`, px - 20, cy + 14);
-    // sin label on y axis
     ctx.fillStyle = '#f97316';
     ctx.fillText(`sin=${sinV.toFixed(2)}`, cx + 6, py - 5);
   }, [theta, accent]);
 
-  return <canvas ref={canvasRef} className="w-full h-80 rounded-xl" style={{ display: 'block' }} />;
+  return (
+    <div className="relative">
+      <canvas ref={canvasRef} className="w-full h-80 rounded-xl" style={{ display: 'block' }} />
+      <ZoomControls zoom={zoom} onZoomIn={zoomIn} onZoomOut={zoomOut} onReset={resetView} />
+    </div>
+  );
 }

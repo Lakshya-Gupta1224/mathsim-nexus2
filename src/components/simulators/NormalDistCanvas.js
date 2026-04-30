@@ -1,16 +1,17 @@
 import React from 'react';
-import useCanvas from './useCanvas';
+import useInteractiveCanvas from './useInteractiveCanvas';
+import ZoomControls from './ZoomControls';
 import { clearCanvas, drawAxes, plotFunction, labelAt } from './canvasUtils';
 
 export default function NormalDistCanvas({ values, accent }) {
   const { mu, sigma } = values;
   const f = x => (1 / (sigma * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * ((x - mu) / sigma) ** 2);
 
-  const canvasRef = useCanvas((ctx, w, h) => {
-    const ox = w * 0.5, oy = h * 0.85, sx = 35, sy = h * 1.5;
+  const { canvasRef, zoom, zoomIn, zoomOut, resetView } = useInteractiveCanvas((ctx, w, h, zm, panX, panY) => {
+    const sx = 35 * zm, sy = h * 1.5 * zm;
+    const ox = w * 0.5 + panX, oy = h * 0.85 + panY;
     clearCanvas(ctx, w, h);
 
-    // Grid
     ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1;
     for (let i = -10; i <= 10; i++) {
       const px = ox + i * sx;
@@ -18,7 +19,6 @@ export default function NormalDistCanvas({ values, accent }) {
     }
     drawAxes(ctx, w, h, ox, oy);
 
-    // Shade ±1σ
     const shade = (lo, hi, color) => {
       ctx.beginPath();
       ctx.moveTo(ox + lo * sx, oy);
@@ -37,13 +37,11 @@ export default function NormalDistCanvas({ values, accent }) {
 
     plotFunction(ctx, f, mu - 4 * sigma, mu + 4 * sigma, 500, ox, oy, sx, sy, accent, 2.5);
 
-    // μ line
     ctx.setLineDash([5, 5]); ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1;
     const mux = ox + mu * sx;
     ctx.beginPath(); ctx.moveTo(mux, 0); ctx.lineTo(mux, h); ctx.stroke();
     ctx.setLineDash([]);
 
-    // Sigma markers
     [-1, 1, -2, 2].forEach(k => {
       const lx = ox + (mu + k * sigma) * sx;
       ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 1;
@@ -56,5 +54,10 @@ export default function NormalDistCanvas({ values, accent }) {
     labelAt(ctx, `68% within ±1σ   95% within ±2σ`, 10, 54, 'rgba(255,255,255,0.3)', 10);
   }, [mu, sigma, accent]);
 
-  return <canvas ref={canvasRef} className="w-full h-80 rounded-xl" style={{ display: 'block' }} />;
+  return (
+    <div className="relative">
+      <canvas ref={canvasRef} className="w-full h-80 rounded-xl" style={{ display: 'block' }} />
+      <ZoomControls zoom={zoom} onZoomIn={zoomIn} onZoomOut={zoomOut} onReset={resetView} />
+    </div>
+  );
 }

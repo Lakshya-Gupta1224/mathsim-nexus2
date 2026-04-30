@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
-import useCanvas from './useCanvas';
+import useInteractiveCanvas from './useInteractiveCanvas';
+import ZoomControls from './ZoomControls';
 import { clearCanvas, drawAxes, drawDot, labelAt } from './canvasUtils';
 
-// Seeded pseudo-random
 function seededRand(seed) {
   let s = seed;
   return () => {
@@ -23,7 +23,6 @@ export default function RegressionCanvas({ values, accent }) {
     });
   }, [corr, noise]);
 
-  // Least squares regression on points
   const n = points.length;
   const sumX = points.reduce((s, p) => s + p.x, 0);
   const sumY = points.reduce((s, p) => s + p.y, 0);
@@ -36,8 +35,9 @@ export default function RegressionCanvas({ values, accent }) {
   const ssRes = points.reduce((s, p) => s + (p.y - (mReg * p.x + bReg)) ** 2, 0);
   const r2 = ssTot > 0 ? 1 - ssRes / ssTot : 1;
 
-  const canvasRef = useCanvas((ctx, w, h) => {
-    const ox = w / 2, oy = h / 2, sx = 30, sy = 20;
+  const { canvasRef, zoom, zoomIn, zoomOut, resetView } = useInteractiveCanvas((ctx, w, h, zm, panX, panY) => {
+    const sx = 30 * zm, sy = 20 * zm;
+    const ox = w / 2 + panX, oy = h / 2 + panY;
     clearCanvas(ctx, w, h);
     ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1;
     for (let i = -8; i <= 8; i++) {
@@ -46,10 +46,8 @@ export default function RegressionCanvas({ values, accent }) {
     }
     drawAxes(ctx, w, h, ox, oy);
 
-    // Points
     points.forEach(p => drawDot(ctx, ox + p.x * sx, oy - p.y * sy, 4, `${accent}90`));
 
-    // Regression line
     ctx.strokeStyle = accent; ctx.lineWidth = 2.5;
     ctx.beginPath();
     const x0 = -w / (2 * sx), x1 = w / (2 * sx);
@@ -62,5 +60,10 @@ export default function RegressionCanvas({ values, accent }) {
     labelAt(ctx, `r (set) = ${corr.toFixed(2)}  noise = ${noise.toFixed(2)}`, 10, 56, 'rgba(255,255,255,0.35)', 11);
   }, [points, mReg, bReg, r2, accent]);
 
-  return <canvas ref={canvasRef} className="w-full h-80 rounded-xl" style={{ display: 'block' }} />;
+  return (
+    <div className="relative">
+      <canvas ref={canvasRef} className="w-full h-80 rounded-xl" style={{ display: 'block' }} />
+      <ZoomControls zoom={zoom} onZoomIn={zoomIn} onZoomOut={zoomOut} onReset={resetView} />
+    </div>
+  );
 }

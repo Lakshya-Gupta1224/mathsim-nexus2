@@ -1,18 +1,19 @@
 import React from 'react';
-import useCanvas from './useCanvas';
-import { clearCanvas, drawGrid, drawAxes, plotFunction, labelAt } from './canvasUtils';
+import useInteractiveCanvas from './useInteractiveCanvas';
+import ZoomControls from './ZoomControls';
+import { clearCanvas, drawAxes, plotFunction, labelAt } from './canvasUtils';
 
 export default function RiemannCanvas({ values, accent }) {
   const { n } = values;
   const a = 0, b = Math.PI;
   const f = x => Math.sin(x);
-  const exact = 2; // ∫₀^π sin(x)dx = 2
+  const exact = 2;
 
-  const canvasRef = useCanvas((ctx, w, h) => {
-    const ox = w * 0.1, oy = h * 0.85, sx = (w * 0.8) / (b - a + 2), sy = h * 0.6;
+  const { canvasRef, zoom, zoomIn, zoomOut, resetView } = useInteractiveCanvas((ctx, w, h, zm, panX, panY) => {
+    const sx = (w * 0.8) / (b - a + 2) * zm, sy = h * 0.6 * zm;
+    const ox = w * 0.1 + panX, oy = h * 0.85 + panY;
     clearCanvas(ctx, w, h);
 
-    // Grid
     ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1;
     for (let i = -1; i <= 5; i++) {
       ctx.beginPath(); ctx.moveTo(ox + i*sx, 0); ctx.lineTo(ox + i*sx, h); ctx.stroke();
@@ -20,7 +21,6 @@ export default function RiemannCanvas({ values, accent }) {
     for (let j = -1; j <= 2; j++) {
       ctx.beginPath(); ctx.moveTo(0, oy - j*sy*0.5); ctx.lineTo(w, oy - j*sy*0.5); ctx.stroke();
     }
-    // Axes
     ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.moveTo(0, oy); ctx.lineTo(w, oy); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(ox, 0); ctx.lineTo(ox, h); ctx.stroke();
@@ -29,7 +29,7 @@ export default function RiemannCanvas({ values, accent }) {
     let sum = 0;
     for (let i = 0; i < n; i++) {
       const xi = a + i * dx;
-      const fxi = f(xi + dx / 2); // midpoint
+      const fxi = f(xi + dx / 2);
       sum += fxi * dx;
       const rectX = ox + xi * sx;
       const rectH = fxi * sy;
@@ -40,7 +40,6 @@ export default function RiemannCanvas({ values, accent }) {
       ctx.strokeRect(rectX, oy - rectH, dx * sx, rectH);
     }
 
-    // Curve
     plotFunction(ctx, f, a, b, 400, ox, oy, sx, sy, accent, 2.5);
 
     const error = Math.abs(exact - sum);
@@ -49,5 +48,10 @@ export default function RiemannCanvas({ values, accent }) {
     labelAt(ctx, `Exact = 2.00000  Error = ${error.toFixed(5)}`, 10, 56, 'rgba(255,255,255,0.4)', 11);
   }, [n, accent]);
 
-  return <canvas ref={canvasRef} className="w-full h-80 rounded-xl" style={{ display: 'block' }} />;
+  return (
+    <div className="relative">
+      <canvas ref={canvasRef} className="w-full h-80 rounded-xl" style={{ display: 'block' }} />
+      <ZoomControls zoom={zoom} onZoomIn={zoomIn} onZoomOut={zoomOut} onReset={resetView} />
+    </div>
+  );
 }

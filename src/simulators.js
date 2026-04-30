@@ -40,6 +40,10 @@ export const SIMULATORS = [
   { id: 'conic', title: 'Conic Sections', category: 'Geometry & Advanced', description: 'Shape evolution based on eccentricity (e).', icon: '◖', color: 'from-lime-500/20 to-green-500/20', accent: '#84cc16', sliders: [{key:'e',label:'Eccentricity e',min:0,max:2,step:0.1,default:0.5}] },
   { id: 'epicycle', title: 'Epicycles', category: 'Geometry & Advanced', description: 'Circles rolling on circles.', icon: '◎', color: 'from-violet-500/20 to-fuchsia-500/20', accent: '#a855f7', sliders: [{key:'f1',label:'Frequency 1',min:-5,max:5,step:1,default:1},{key:'f2',label:'Frequency 2',min:-5,max:5,step:1,default:3}] },
   { id: 'cobweb', title: 'Logistic Map', category: 'Chaos', description: 'Cobweb plot for x = rx(1-x).', icon: '🕸', color: 'from-red-500/20 to-rose-500/20', accent: '#e11d48', sliders: [{key:'r',label:'Growth Rate r',min:1,max:4,step:0.01,default:2.8},{key:'x0',label:'Initial x₀',min:0.01,max:0.99,step:0.01,default:0.2}] },
+
+  // ─── 3D WEBGL SIMULATORS ─────────────────────────────
+  { id: 'topography', title: 'Interactive Topography', category: '3D Visualizers', is3D: true, description: 'Explore f(x,y) as a 3D surface. Drag to orbit, scroll to zoom.', icon: '🏔️', color: 'from-emerald-500/20 to-teal-500/20', accent: '#10b981', sliders: [{ key: 'a', label: 'Amplitude', min: 0.5, max: 3, step: 0.1, default: 1 }, { key: 'b', label: 'X Frequency', min: 0.5, max: 5, step: 0.1, default: 1 }, { key: 'c', label: 'Y Frequency', min: 0.5, max: 5, step: 0.1, default: 1 }] },
+  { id: 'lorenz3d', title: '3D Lorenz Attractor', category: '3D Visualizers', is3D: true, description: 'Full 3D chaotic attractor with time scrubbing. Orbit and zoom the butterfly.', icon: '🦋', color: 'from-rose-500/20 to-red-500/20', accent: '#f43f5e', sliders: [{ key: 'sigma', label: 'Sigma (σ)', min: 1, max: 20, step: 0.5, default: 10 }, { key: 'rho', label: 'Rho (ρ)', min: 1, max: 50, step: 0.5, default: 28 }, { key: 'beta', label: 'Beta (β)', min: 0.5, max: 5, step: 0.1, default: 2.667 }] },
 ];
 
 export const SIMULATOR_META = {
@@ -75,7 +79,46 @@ export const SIMULATOR_META = {
   complexroots: { theory: 'Solutions to the equation z^n = 1 in the complex plane.', intuition: 'The roots are perfectly spaced out along the edge of the unit circle.', examQuestion: 'How many distinct roots of unity exist for z^n = 1?', options: ['n', 'n-1', 'n+1', 'Infinite'], answer: 'n' },
   cobweb: { theory: 'Iterating a function to find fixed points or chaotic behavior.', intuition: 'Watch the path bounce between the line y=x and the function curve y=f(x).', examQuestion: 'What value of x makes the logistic map x = rx(1-x) equal to zero?', options: ['0 or 1', '0.5', 'r', '-1'], answer: '0 or 1' },
   conic: { theory: 'Curves defined by a focus point and a directrix line.', intuition: 'e<1 is an ellipse, e=1 a parabola, and e>1 a hyperbola.', examQuestion: 'Which eccentricity (e) defines a perfect circle?', options: ['e = 0', 'e = 1', 'e > 1', '0 < e < 1'], answer: 'e = 0' },
-  epicycle: { theory: 'The geometric path of a circle rolling on another circle.', intuition: 'Adding different frequencies together creates complex, spirograph-like paths.', examQuestion: 'In an epicycle system, adding a smaller, high-frequency circle makes the drawn shape:', options: ['More complex/loopy', 'A perfect circle', 'A straight line', 'Disappear'], answer: 'More complex/loopy' }
+  epicycle: { theory: 'The geometric path of a circle rolling on another circle.', intuition: 'Adding different frequencies together creates complex, spirograph-like paths.', examQuestion: 'In an epicycle system, adding a smaller, high-frequency circle makes the drawn shape:', options: ['More complex/loopy', 'A perfect circle', 'A straight line', 'Disappear'], answer: 'More complex/loopy' },
+
+  // 3D Visualizers
+  topography: { theory: 'Multivariable functions f(x,y) create surfaces in 3D. The height at each (x,y) point represents z = f(x,y).', intuition: 'Changing frequency parameters creates mountain-like peaks and valleys. Higher amplitude = taller peaks.', examQuestion: 'For f(x,y) = sin(x)·cos(y), what is f(0,0)?', options: ['0', '1', '-1', 'undefined'], answer: '0' },
+  lorenz3d: { theory: 'The Lorenz system in full 3D: dx/dt=σ(y−x), dy/dt=x(ρ−z)−y, dz/dt=xy−βz. The attractor has a butterfly shape.', intuition: 'The 3D view reveals the true butterfly structure hidden in 2D projections. Orbiting shows both wings.', examQuestion: 'The Lorenz attractor is an example of a _____ attractor.', options: ['Strange', 'Fixed point', 'Periodic', 'Linear'], answer: 'Strange' },
 };
 
 export const CATEGORIES = [...new Set(SIMULATORS.map(s => s.category))];
+
+// Curve function factories for Marble Run mode
+// Each returns (values) => (x) => y, producing a curve function from slider values
+export const CURVE_FN_FACTORIES = {
+  linear:     (v) => (x) => v.m * x + v.c,
+  parabola:   (v) => (x) => v.a * (x - v.h) ** 2 + v.k,
+  polynomial: (v) => (x) => (x - v.r1) * (x - v.r2) * (x - v.r3) * (x - v.r4) / 10,
+  logarithm:  (v) => (x) => x > 0.05 ? Math.log(x) / Math.log(v.b) : -10,
+  wavemaker:  (v) => (x) => v.A * Math.sin(v.omega * x + v.phi),
+  fourier:    (v) => (x) => v.h1 * Math.sin(x) + v.h2 * Math.sin(3 * x) + v.h3 * Math.sin(5 * x),
+  bezier:     (v) => (x) => {
+    // Approximate quadratic bezier as function of x
+    const t = (x + 2) / 4; // map x from [-2,2] to t in [0,1]
+    if (t < 0 || t > 1) return -10;
+    const p0y = -1, p1y = v.cy, p2y = 1;
+    return (1-t)*(1-t)*p0y + 2*(1-t)*t*p1y + t*t*p2y;
+  },
+  conic:      (v) => (x) => {
+    // Approximate conic section as y = f(x)
+    const e = v.e;
+    const a = e * 5;
+    if (e < 1) { // ellipse
+      const b = a * Math.sqrt(1 - e * e);
+      const val = 1 - (x * x) / (a * a);
+      return val > 0 ? b * Math.sqrt(val) : 0;
+    }
+    return a / (1 + Math.abs(x)); // fallback
+  },
+};
+
+// IDs of simulators compatible with marble mode
+export const MARBLE_SIMS = new Set(Object.keys(CURVE_FN_FACTORIES));
+
+// IDs of simulators compatible with boat/vector-field navigation
+export const BOAT_SIMS = new Set(['slopefield', 'matrix', 'vectoradder']);

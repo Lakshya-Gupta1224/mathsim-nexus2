@@ -1,12 +1,14 @@
 import React from 'react';
-import useCanvas from './useCanvas';
+import useInteractiveCanvas from './useInteractiveCanvas';
+import ZoomControls from './ZoomControls';
 import { clearCanvas, drawAxes, plotFunction } from './canvasUtils';
 
 export default function CobwebCanvas({ values, accent }) {
   const { r, x0 } = values;
   
-  const ref = useCanvas((ctx, w, h) => {
-    const ox = w * 0.1, oy = h * 0.9, s = Math.min(w, h) * 0.7; 
+  const { canvasRef, zoom, zoomIn, zoomOut, resetView } = useInteractiveCanvas((ctx, w, h, zm, panX, panY) => {
+    const s = Math.min(w, h) * 0.7 * zm;
+    const ox = w * 0.1 + panX, oy = h * 0.9 + panY; 
     clearCanvas(ctx, w, h); 
     drawAxes(ctx, w, h, ox, oy);
     
@@ -29,5 +31,10 @@ export default function CobwebCanvas({ values, accent }) {
     ctx.stroke();
   }, [r, x0, accent]); 
   
-  return <canvas ref={ref} className="w-full h-80 rounded-xl block" />;
+  return (
+    <div className="relative">
+      <canvas ref={canvasRef} className="w-full h-80 rounded-xl block" />
+      <ZoomControls zoom={zoom} onZoomIn={zoomIn} onZoomOut={zoomOut} onReset={resetView} />
+    </div>
+  );
 }

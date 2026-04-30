@@ -1,5 +1,6 @@
 import React from 'react';
-import useCanvas from './useCanvas';
+import useInteractiveCanvas from './useInteractiveCanvas';
+import ZoomControls from './ZoomControls';
 import { clearCanvas, drawGrid, drawAxes, plotFunction, labelAt } from './canvasUtils';
 
 export default function AreaCurveCanvas({ values, accent }) {
@@ -8,13 +9,13 @@ export default function AreaCurveCanvas({ values, accent }) {
   const f = x => x * x;
   const exact = (hi ** 3 / 3) - (lo ** 3 / 3);
 
-  const canvasRef = useCanvas((ctx, w, h) => {
-    const ox = w / 2, oy = h * 0.75, sx = 40, sy = 30;
+  const { canvasRef, zoom, zoomIn, zoomOut, resetView } = useInteractiveCanvas((ctx, w, h, zm, panX, panY) => {
+    const sx = 40 * zm, sy = 30 * zm;
+    const ox = w / 2 + panX, oy = h * 0.75 + panY;
     clearCanvas(ctx, w, h);
     drawGrid(ctx, w, h, sx, sy, ox, oy);
     drawAxes(ctx, w, h, ox, oy);
 
-    // Shaded area
     const steps = 200;
     ctx.beginPath();
     ctx.moveTo(ox + lo * sx, oy);
@@ -30,7 +31,6 @@ export default function AreaCurveCanvas({ values, accent }) {
     ctx.lineWidth = 1;
     ctx.stroke();
 
-    // Bounds markers
     ctx.setLineDash([4, 4]); ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(ox + lo * sx, 0); ctx.lineTo(ox + lo * sx, oy); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(ox + hi * sx, 0); ctx.lineTo(ox + hi * sx, oy); ctx.stroke();
@@ -39,7 +39,6 @@ export default function AreaCurveCanvas({ values, accent }) {
     labelAt(ctx, 'a', ox + lo * sx - 5, oy + 14, '#22d3ee', 12);
     labelAt(ctx, 'b', ox + hi * sx - 5, oy + 14, '#f97316', 12);
 
-    // Curve
     plotFunction(ctx, f, -w/(2*sx)-1, w/(2*sx)+1, 400, ox, oy, sx, sy, accent, 2.5);
 
     labelAt(ctx, `∫ₐᵇ x² dx`, 10, 20, accent, 14);
@@ -48,5 +47,10 @@ export default function AreaCurveCanvas({ values, accent }) {
     labelAt(ctx, `= b³/3 − a³/3`, 10, 76, 'rgba(255,255,255,0.35)', 11);
   }, [a, b, accent]);
 
-  return <canvas ref={canvasRef} className="w-full h-80 rounded-xl" style={{ display: 'block' }} />;
+  return (
+    <div className="relative">
+      <canvas ref={canvasRef} className="w-full h-80 rounded-xl" style={{ display: 'block' }} />
+      <ZoomControls zoom={zoom} onZoomIn={zoomIn} onZoomOut={zoomOut} onReset={resetView} />
+    </div>
+  );
 }

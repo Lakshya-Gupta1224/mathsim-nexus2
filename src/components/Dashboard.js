@@ -74,7 +74,7 @@ export default function Dashboard({ user, onLogout, onOpenSimulator }) {
 
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-slate-950/80 border-b border-white/10 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="w-full flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-xl font-bold text-white">∑ MathSim <span className="text-cyan-400">Nexus</span></span>
           </div>
@@ -93,72 +93,80 @@ export default function Dashboard({ user, onLogout, onOpenSimulator }) {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* Stats row */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-          <StatCard label="Simulators Run" value={userData?.simulatorsRan || 0} accent="#22d3ee" />
-          <StatCard label="Slider Moves" value={userData?.sliderInteractions || 0} accent="#6366f1" />
-          <StatCard
-            label="Intuition Index"
-            value={`${userData?.intuitionIndex || 0}%`}
-            accent="#84cc16"
-          />
-          <StatCard
-            label="Sims Explored"
-            value={`${Object.keys(mastery).length} / 20`}
-            accent="#f59e0b"
-          />
-        </div>
+      <main className="max-w-[1600px] mx-auto px-6 py-8">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Left: Simulator cards (main content) */}
+          <div className="flex-1 min-w-0">
+            {/* Category filter */}
+            <div className="flex items-center gap-2 mb-6 flex-wrap">
+              {['All', ...CATEGORIES].map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`text-xs px-4 py-1.5 rounded-full border transition ${
+                    activeCategory === cat
+                      ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-300'
+                      : 'border-white/10 text-slate-400 hover:border-white/20 hover:text-white'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
 
-        {/* Intuition bar */}
-        {userData?.intuitionIndex > 0 && (
-          <div className="mb-8 backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl p-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-slate-300 font-medium">AI Intuition Index</span>
-              <span className="text-cyan-400 font-bold text-sm">{userData.intuitionIndex}%</span>
+            {/* Simulator grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+              {filteredSims.map(sim => (
+                <SimCard
+                  key={sim.id}
+                  sim={sim}
+                  masteryScore={mastery[sim.id] || 0}
+                  onClick={() => onOpenSimulator(sim)}
+                />
+              ))}
             </div>
-            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-700"
-                style={{
-                  width: `${userData.intuitionIndex}%`,
-                  background: 'linear-gradient(90deg, #06b6d4, #3b82f6, #6366f1)'
-                }}
-              />
-            </div>
-            <p className="text-xs text-slate-500 mt-2">
-              Based on depth of slider interactions across all simulators.
-            </p>
           </div>
-        )}
 
-        {/* Category filter */}
-        <div className="flex items-center gap-2 mb-6 flex-wrap">
-          {['All', ...CATEGORIES].map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`text-xs px-4 py-1.5 rounded-full border transition ${
-                activeCategory === cat
-                  ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-300'
-                  : 'border-white/10 text-slate-400 hover:border-white/20 hover:text-white'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
+          {/* Right: Stats sidebar */}
+          <div className="lg:w-72 xl:w-80 flex-shrink-0">
+            <div className="lg:sticky lg:top-24 space-y-4">
+              <h2 className="text-xs uppercase tracking-widest text-slate-500 mb-2">Your Stats</h2>
+              <StatCard label="Simulators Run" value={userData?.simulatorsRan || 0} accent="#22d3ee" />
+              <StatCard label="Slider Moves" value={userData?.sliderInteractions || 0} accent="#6366f1" />
+              <StatCard
+                label="Intuition Index"
+                value={`${userData?.intuitionIndex || 0}%`}
+                accent="#84cc16"
+              />
+              <StatCard
+                label="Sims Explored"
+                value={`${Object.keys(mastery).length} / 20`}
+                accent="#f59e0b"
+              />
 
-        {/* Simulator grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filteredSims.map(sim => (
-            <SimCard
-              key={sim.id}
-              sim={sim}
-              masteryScore={mastery[sim.id] || 0}
-              onClick={() => onOpenSimulator(sim)}
-            />
-          ))}
+              {/* Intuition bar */}
+              {userData?.intuitionIndex > 0 && (
+                <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-slate-300 font-medium">AI Intuition Index</span>
+                    <span className="text-cyan-400 font-bold text-sm">{userData.intuitionIndex}%</span>
+                  </div>
+                  <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-700"
+                      style={{
+                        width: `${userData.intuitionIndex}%`,
+                        background: 'linear-gradient(90deg, #06b6d4, #3b82f6, #6366f1)'
+                      }}
+                    />
+                  </div>
+                  <p className="text-xs text-slate-500 mt-2">
+                    Based on depth of slider interactions across all simulators.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </main>
     </div>

@@ -1,4 +1,4 @@
-// canvasUtils.js — shared drawing helpers
+// canvasUtils.js — shared drawing helpers with zoom/pan support
 
 export const DARK_BG = '#0f172a';
 export const GRID_COLOR = 'rgba(255,255,255,0.05)';
@@ -11,19 +11,27 @@ export function clearCanvas(ctx, w, h) {
   ctx.fillRect(0, 0, w, h);
 }
 
+// Apply zoom and pan to base origin and scale
+export function getTransform(w, h, baseScale, zoom = 1, panX = 0, panY = 0) {
+  const s = baseScale * zoom;
+  const ox = w / 2 + panX;
+  const oy = h / 2 + panY;
+  return { ox, oy, s };
+}
+
 export function drawGrid(ctx, w, h, xScale, yScale, ox, oy, step = 1) {
   ctx.strokeStyle = GRID_COLOR;
   ctx.lineWidth = 1;
   // vertical
-  for (let gx = -20; gx <= 20; gx += step) {
+  for (let gx = -50; gx <= 50; gx += step) {
     const px = ox + gx * xScale;
-    if (px < 0 || px > w) continue;
+    if (px < -10 || px > w + 10) continue;
     ctx.beginPath(); ctx.moveTo(px, 0); ctx.lineTo(px, h); ctx.stroke();
   }
   // horizontal
-  for (let gy = -20; gy <= 20; gy += step) {
+  for (let gy = -50; gy <= 50; gy += step) {
     const py = oy - gy * yScale;
-    if (py < 0 || py > h) continue;
+    if (py < -10 || py > h + 10) continue;
     ctx.beginPath(); ctx.moveTo(0, py); ctx.lineTo(w, py); ctx.stroke();
   }
 }
@@ -43,7 +51,7 @@ export function drawAxisLabels(ctx, w, h, ox, oy, xScale, yScale, xLabel = 'x', 
   ctx.textAlign = 'center';
   
   // X-axis ticks & labels
-  for (let i = -10; i <= 10; i += 2) {
+  for (let i = -20; i <= 20; i += 2) {
     const px = ox + i * xScale;
     if (px < 0 || px > w) continue;
     ctx.beginPath();
@@ -57,7 +65,7 @@ export function drawAxisLabels(ctx, w, h, ox, oy, xScale, yScale, xLabel = 'x', 
   
   // Y-axis ticks & labels
   ctx.textAlign = 'right';
-  for (let i = -10; i <= 10; i += 2) {
+  for (let i = -20; i <= 20; i += 2) {
     const py = oy - i * yScale;
     if (py < 0 || py > h) continue;
     ctx.beginPath();

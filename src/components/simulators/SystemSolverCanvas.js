@@ -1,11 +1,10 @@
 import React from 'react';
-import useCanvas from './useCanvas';
+import useInteractiveCanvas from './useInteractiveCanvas';
+import ZoomControls from './ZoomControls';
 import { clearCanvas, drawGrid, drawAxes, plotFunction, drawDot, labelAt } from './canvasUtils';
 
 export default function SystemSolverCanvas({ values, accent }) {
   const { a1, b1, a2, b2 } = values;
-  // Line 1: y = a1*x + b1, Line 2: y = a2*x + b2
-  // Intersection: a1*x + b1 = a2*x + b2 => x = (b2-b1)/(a1-a2)
   const denom = a1 - a2;
   let ix = null, iy = null;
   if (Math.abs(denom) > 0.001) {
@@ -13,8 +12,9 @@ export default function SystemSolverCanvas({ values, accent }) {
     iy = a1 * ix + b1;
   }
 
-  const canvasRef = useCanvas((ctx, w, h) => {
-    const ox = w / 2, oy = h / 2, s = 35;
+  const { canvasRef, zoom, zoomIn, zoomOut, resetView } = useInteractiveCanvas((ctx, w, h, zm, panX, panY) => {
+    const s = 35 * zm;
+    const ox = w / 2 + panX, oy = h / 2 + panY;
     clearCanvas(ctx, w, h);
     drawGrid(ctx, w, h, s, s, ox, oy);
     drawAxes(ctx, w, h, ox, oy);
@@ -30,5 +30,11 @@ export default function SystemSolverCanvas({ values, accent }) {
     labelAt(ctx, `L1: y=${a1.toFixed(1)}x+${b1.toFixed(1)}`, 10, 20, accent, 12);
     labelAt(ctx, `L2: y=${a2.toFixed(1)}x+${b2.toFixed(1)}`, 10, 36, '#f97316', 12);
   }, [a1, b1, a2, b2, accent]);
-  return <canvas ref={canvasRef} className="w-full h-80 rounded-xl" style={{ display: 'block' }} />;
+
+  return (
+    <div className="relative">
+      <canvas ref={canvasRef} className="w-full h-80 rounded-xl" style={{ display: 'block' }} />
+      <ZoomControls zoom={zoom} onZoomIn={zoomIn} onZoomOut={zoomOut} onReset={resetView} />
+    </div>
+  );
 }

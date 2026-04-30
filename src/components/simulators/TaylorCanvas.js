@@ -1,8 +1,8 @@
 import React from 'react';
-import useCanvas from './useCanvas';
+import useInteractiveCanvas from './useInteractiveCanvas';
+import ZoomControls from './ZoomControls';
 import { clearCanvas, drawGrid, drawAxes, plotFunction, labelAt } from './canvasUtils';
 
-// Taylor series sin(x) = sum_{k=0}^{n} (-1)^k * x^(2k+1) / (2k+1)!
 function factorial(n) {
   if (n <= 1) return 1;
   let r = 1; for (let i = 2; i <= n; i++) r *= i; return r;
@@ -17,18 +17,16 @@ function taylorSin(x, terms) {
 
 export default function TaylorCanvas({ values, accent }) {
   const { n } = values;
-  const terms = Math.floor((n + 1) / 2); // degree n -> number of terms
+  const terms = Math.floor((n + 1) / 2);
 
-  const canvasRef = useCanvas((ctx, w, h) => {
-    const ox = w / 2, oy = h / 2, sx = 40, sy = 60;
+  const { canvasRef, zoom, zoomIn, zoomOut, resetView } = useInteractiveCanvas((ctx, w, h, zm, panX, panY) => {
+    const sx = 40 * zm, sy = 60 * zm;
+    const ox = w / 2 + panX, oy = h / 2 + panY;
     clearCanvas(ctx, w, h);
     drawGrid(ctx, w, h, sx, sy, ox, oy);
     drawAxes(ctx, w, h, ox, oy);
 
-    // True sin(x) dim
     plotFunction(ctx, Math.sin, -w/(2*sx), w/(2*sx), 600, ox, oy, sx, sy, 'rgba(255,255,255,0.2)', 1.5);
-
-    // Taylor approx
     plotFunction(ctx, x => taylorSin(x, terms), -w/(2*sx), w/(2*sx), 600, ox, oy, sx, sy, accent, 2.5);
 
     labelAt(ctx, `Degree n = ${n}  (${terms} terms)`, 10, 20, accent, 13);
@@ -36,5 +34,10 @@ export default function TaylorCanvas({ values, accent }) {
     labelAt(ctx, `White: true sin(x)`, 10, 54, 'rgba(255,255,255,0.3)', 11);
   }, [n, accent]);
 
-  return <canvas ref={canvasRef} className="w-full h-80 rounded-xl" style={{ display: 'block' }} />;
+  return (
+    <div className="relative">
+      <canvas ref={canvasRef} className="w-full h-80 rounded-xl" style={{ display: 'block' }} />
+      <ZoomControls zoom={zoom} onZoomIn={zoomIn} onZoomOut={zoomOut} onReset={resetView} />
+    </div>
+  );
 }

@@ -1,12 +1,13 @@
 import React from 'react';
-import useCanvas from './useCanvas';
+import useInteractiveCanvas from './useInteractiveCanvas';
+import ZoomControls from './ZoomControls';
 import { clearCanvas, drawAxes } from './canvasUtils';
 
 export default function MatrixCanvas({ values, accent }) {
   const { a, b, c, d } = values;
   
-  const ref = useCanvas((ctx, w, h) => {
-    const ox = w / 2, oy = h / 2, s = 40; 
+  const { canvasRef, zoom, zoomIn, zoomOut, resetView } = useInteractiveCanvas((ctx, w, h, zm, panX, panY) => {
+    const ox = w / 2 + panX, oy = h / 2 + panY, s = 40 * zm; 
     clearCanvas(ctx, w, h); 
     drawAxes(ctx, w, h, ox, oy);
     
@@ -18,5 +19,10 @@ export default function MatrixCanvas({ values, accent }) {
     }
   }, [a, b, c, d, accent]); 
   
-  return <canvas ref={ref} className="w-full h-80 rounded-xl block" />;
+  return (
+    <div className="relative">
+      <canvas ref={canvasRef} className="w-full h-80 rounded-xl block" />
+      <ZoomControls zoom={zoom} onZoomIn={zoomIn} onZoomOut={zoomOut} onReset={resetView} />
+    </div>
+  );
 }

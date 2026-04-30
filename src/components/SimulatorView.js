@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { recordSliderInteraction, recordSimulatorRun, getUser, updateUserStats } from '../auth';
-import { SIMULATOR_META } from '../simulators';
+import { SIMULATOR_META, MARBLE_SIMS, BOAT_SIMS, CURVE_FN_FACTORIES } from '../simulators';
 import SimulatorCanvas from './SimulatorCanvas';
+import MarbleOverlay from './simulators/MarbleOverlay';
+import VectorFieldBoat from './simulators/VectorFieldBoat';
 
 export default function SimulatorView({ user, simulator, onBack }) {
   const initialValues = useMemo(() => {
@@ -14,10 +16,16 @@ export default function SimulatorView({ user, simulator, onBack }) {
   const [interactionCount, setInteractionCount] = useState(0);
   const [mastery, setMastery] = useState(0);
 
-  // New Quiz States
+  // Quiz States
   const [isQuizMode, setIsQuizMode] = useState(false);
   const [quizState, setQuizState] = useState({ answered: false, correct: false, selected: null });
   const meta = SIMULATOR_META[simulator.id];
+
+  // Mode: 'params' | 'quiz' | 'marble' | 'boat'
+  const [mode, setMode] = useState('params');
+
+  const hasMarble = MARBLE_SIMS.has(simulator.id);
+  const hasBoat = BOAT_SIMS.has(simulator.id);
 
   useEffect(() => {
     recordSimulatorRun(user.id);
@@ -42,11 +50,19 @@ export default function SimulatorView({ user, simulator, onBack }) {
     if (isCorrect) {
       const u = getUser(user.id);
       const currentMastery = u?.masteryScores?.[simulator.id] || 0;
-      // Give them 20 mastery points for a correct answer
       updateUserStats(user.id, { masteryScores: { ...(u?.masteryScores || {}), [simulator.id]: currentMastery + 20 } });
       setMastery(currentMastery + 20);
     }
   };
+
+  // Get curve function for marble mode
+  const curveFn = useMemo(() => {
+    if (!hasMarble) return null;
+    const factory = CURVE_FN_FACTORIES[simulator.id];
+    return factory ? factory(values) : null;
+  }, [hasMarble, simulator.id, values]);
+
+  const is3D = simulator.is3D;
 
   return (
     <div className="min-h-screen bg-slate-950 relative flex flex-col">
@@ -54,15 +70,17 @@ export default function SimulatorView({ user, simulator, onBack }) {
         style={{ backgroundImage: 'linear-gradient(#1e293b 1px,transparent 1px),linear-gradient(90deg,#1e293b 1px,transparent 1px)', backgroundSize: '40px 40px' }} />
 
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-slate-950/80 border-b border-white/10 px-6 py-4">
-        <div className="max-w-5xl mx-auto flex items-center gap-4">
-          <button onClick={onBack} className="text-slate-400 hover:text-white text-sm border border-white/10 hover:border-white/30 rounded-lg px-3 py-1.5 transition flex items-center gap-2">
-            ← Back
-          </button>
-          <div className="flex items-center gap-3 flex-1">
-            <span className="text-xl">{simulator.icon}</span>
-            <div>
-              <h1 className="text-white font-semibold text-sm">{simulator.title}</h1>
-              <p className="text-slate-500 text-xs">{simulator.category}</p>
+        <div className="w-full flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button onClick={onBack} className="text-slate-400 hover:text-white text-sm border border-white/10 hover:border-white/30 rounded-lg px-3 py-1.5 transition flex items-center gap-2">
+              ← Back
+            </button>
+            <div className="flex items-center gap-3 flex-1">
+              <span className="text-xl">{simulator.icon}</span>
+              <div>
+                <h1 className="text-white font-semibold text-sm">{simulator.title}</h1>
+                <p className="text-slate-500 text-xs">{simulator.category}</p>
+              </div>
             </div>
           </div>
           <div className="hidden sm:flex items-center gap-6 text-xs text-slate-400">
@@ -72,34 +90,64 @@ export default function SimulatorView({ user, simulator, onBack }) {
         </div>
       </header>
 
-      <main className="flex-1 max-w-5xl mx-auto w-full px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <main className="flex-1 w-full px-6 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           
-          {/* Left Canvas Panel */}
-          <div className="lg:col-span-2 backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col">
-            <SimulatorCanvas simulator={simulator} values={values} />
+          {/* Left Panel: 4/5 width */}
+          <div className="lg:col-span-4 flex flex-col gap-6">
+            {/* Canvas Panel */}
+            <div className="full-height-canvas backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col">
+              <SimulatorCanvas simulator={simulator} values={values} />
+            </div>
+            
+            {/* Marble overlay — rendered below the canvas when in marble mode */}
+            {mode === 'marble' && curveFn && (
+              <div className="full-height-canvas backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col">
+                <MarbleOverlay curveFn={curveFn} accent={simulator.accent} />
+              </div>
+            )}
+
+            {/* Boat overlay */}
+            {mode === 'boat' && (
+              <div className="full-height-canvas backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col">
+                <VectorFieldBoat values={values} simulatorId={simulator.id} accent={simulator.accent} />
+              </div>
+            )}
           </div>
 
-          {/* Right Control/Quiz Panel */}
-          <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col gap-5">
+          {/* Right Control Panel: 1/5 width, sticky */}
+          <div className="lg:col-span-1 backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col gap-5 sticky top-[88px] self-start h-[calc(100vh-120px)] overflow-y-auto">
             
-            {/* Toggle Buttons */}
-            <div className="flex gap-2 border-b border-white/10 pb-4">
+            {/* Mode toggle */}
+            <div className="flex gap-1 border-b border-white/10 pb-4 flex-wrap">
               <button 
-                onClick={() => setIsQuizMode(false)} 
-                className={`flex-1 py-1.5 text-xs font-semibold uppercase tracking-wider rounded transition ${!isQuizMode ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-white'}`}>
+                onClick={() => { setMode('params'); setIsQuizMode(false); }} 
+                className={`flex-1 py-1.5 text-xs font-semibold uppercase tracking-wider rounded transition ${mode === 'params' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-white'}`}>
                 Parameters
               </button>
               <button 
-                onClick={() => setIsQuizMode(true)} 
-                className={`flex-1 py-1.5 text-xs font-semibold uppercase tracking-wider rounded transition ${isQuizMode ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-white'}`}>
-                Knowledge Quiz
+                onClick={() => { setMode('quiz'); setIsQuizMode(true); }} 
+                className={`flex-1 py-1.5 text-xs font-semibold uppercase tracking-wider rounded transition ${mode === 'quiz' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-white'}`}>
+                Quiz
               </button>
+              {hasMarble && (
+                <button 
+                  onClick={() => { setMode('marble'); setIsQuizMode(false); }} 
+                  className={`flex-1 py-1.5 text-xs font-semibold uppercase tracking-wider rounded transition ${mode === 'marble' ? 'bg-amber-500/20 text-amber-200 border border-amber-500/30' : 'text-slate-500 hover:text-white'}`}>
+                  🎱 Marble
+                </button>
+              )}
+              {hasBoat && (
+                <button 
+                  onClick={() => { setMode('boat'); setIsQuizMode(false); }} 
+                  className={`flex-1 py-1.5 text-xs font-semibold uppercase tracking-wider rounded transition ${mode === 'boat' ? 'bg-blue-500/20 text-blue-200 border border-blue-500/30' : 'text-slate-500 hover:text-white'}`}>
+                  🚤 Navigate
+                </button>
+              )}
             </div>
 
-            {/* View Switching Logic */}
-            {!isQuizMode ? (
-              // --- PARAMETERS VIEW ---
+            {/* View content based on mode */}
+            {mode === 'params' && (
               <>
                 <div>
                   <h2 className="text-white font-semibold text-sm mb-1">Adjust Values</h2>
@@ -137,8 +185,9 @@ export default function SimulatorView({ user, simulator, onBack }) {
                   Reset to defaults
                 </button>
               </>
-            ) : (
-              // --- QUIZ VIEW ---
+            )}
+
+            {mode === 'quiz' && (
               <div className="flex flex-col flex-1">
                 {meta && meta.examQuestion && meta.examQuestion !== 'N/A' ? (
                   <>
@@ -174,6 +223,87 @@ export default function SimulatorView({ user, simulator, onBack }) {
                 )}
               </div>
             )}
+
+            {mode === 'marble' && (
+              <div className="flex flex-col gap-4">
+                <div>
+                  <h2 className="text-white font-semibold text-sm mb-1">🎱 Marble Run</h2>
+                  <p className="text-slate-500 text-xs leading-relaxed">
+                    Adjust the curve with sliders above, then drop a marble! 
+                    Tweak the equation so the marble rolls into the golden target bucket.
+                  </p>
+                </div>
+                <div className="p-3 rounded-lg bg-amber-500/5 border border-amber-500/20">
+                  <p className="text-xs text-amber-200/80">
+                    <span className="font-bold">How to play:</span> Use the Parameters tab to shape the curve, 
+                    then come back here. Position your drop point, and hit Drop!
+                  </p>
+                </div>
+                {/* Sliders still accessible in marble mode */}
+                <div className="space-y-4">
+                  {simulator.sliders.map(slider => (
+                    <div key={slider.key}>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-xs text-slate-400">{slider.label}</label>
+                        <span className="text-xs font-mono" style={{ color: simulator.accent }}>
+                          {typeof values[slider.key] === 'number'
+                            ? values[slider.key] % 1 === 0 ? values[slider.key] : values[slider.key].toFixed(2)
+                            : values[slider.key]}
+                        </span>
+                      </div>
+                      <input
+                        type="range" min={slider.min} max={slider.max} step={slider.step}
+                        value={values[slider.key]} onChange={e => handleSliderChange(slider.key, e.target.value)}
+                        className="w-full h-1 rounded-full appearance-none cursor-pointer"
+                        style={{
+                          background: `linear-gradient(to right, ${simulator.accent}80 0%, ${simulator.accent}80 ${((values[slider.key] - slider.min) / (slider.max - slider.min)) * 100}%, rgba(255,255,255,0.08) ${((values[slider.key] - slider.min) / (slider.max - slider.min)) * 100}%, rgba(255,255,255,0.08) 100%)`
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {mode === 'boat' && (
+              <div className="flex flex-col gap-4">
+                <div>
+                  <h2 className="text-white font-semibold text-sm mb-1">🚤 Vector Navigation</h2>
+                  <p className="text-slate-500 text-xs leading-relaxed">
+                    Use WASD or arrow keys to navigate the boat through the vector field. 
+                    Tweak the field equations to steer through obstacles to the goal!
+                  </p>
+                </div>
+                <div className="p-3 rounded-lg bg-blue-500/5 border border-blue-500/20">
+                  <p className="text-xs text-blue-200/80">
+                    <span className="font-bold">Controls:</span> W/↑ forward, S/↓ backward, A/← left, D/→ right
+                  </p>
+                </div>
+                {/* Sliders for adjusting the field */}
+                <div className="space-y-4">
+                  {simulator.sliders.map(slider => (
+                    <div key={slider.key}>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-xs text-slate-400">{slider.label}</label>
+                        <span className="text-xs font-mono" style={{ color: simulator.accent }}>
+                          {typeof values[slider.key] === 'number'
+                            ? values[slider.key] % 1 === 0 ? values[slider.key] : values[slider.key].toFixed(2)
+                            : values[slider.key]}
+                        </span>
+                      </div>
+                      <input
+                        type="range" min={slider.min} max={slider.max} step={slider.step}
+                        value={values[slider.key]} onChange={e => handleSliderChange(slider.key, e.target.value)}
+                        className="w-full h-1 rounded-full appearance-none cursor-pointer"
+                        style={{
+                          background: `linear-gradient(to right, ${simulator.accent}80 0%, ${simulator.accent}80 ${((values[slider.key] - slider.min) / (slider.max - slider.min)) * 100}%, rgba(255,255,255,0.08) ${((values[slider.key] - slider.min) / (slider.max - slider.min)) * 100}%, rgba(255,255,255,0.08) 100%)`
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </main>
@@ -181,7 +311,13 @@ export default function SimulatorView({ user, simulator, onBack }) {
       <style>{`
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%; background: white; border: 2px solid rgba(255,255,255,0.3); box-shadow: 0 0 8px rgba(0,0,0,0.5); cursor: pointer; }
         input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: white; border: 2px solid rgba(255,255,255,0.3); cursor: pointer; }
-      `}</style>
+        .full-height-canvas canvas {
+          height: calc(100vh - 280px) !important;
+          min-height: 400px !important;
+          max-height: 1000px !important;
+        }
+      `}
+      </style>
     </div>
   );
 }

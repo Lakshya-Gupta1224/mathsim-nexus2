@@ -34,6 +34,10 @@ import CobwebCanvas from './simulators/CobwebCanvas';
 import ConicCanvas from './simulators/ConicCanvas';
 import EpicycleCanvas from './simulators/EpicycleCanvas';
 
+// 3D WebGL Simulators
+import TopographyCanvas from './simulators/TopographyCanvas';
+import Lorenz3DCanvas from './simulators/Lorenz3DCanvas';
+
 const MAP = {
   linear: LinearCanvas, parabola: ParabolaCanvas, polynomial: PolynomialCanvas,
   logarithm: LogarithmCanvas, systemsolver: SystemSolverCanvas, unitcircle: UnitCircleCanvas,
@@ -47,7 +51,10 @@ const MAP = {
   matrix: MatrixCanvas, polarrose: PolarRoseCanvas, lissajous: LissajousCanvas,
   modulocircle: ModuloCircleCanvas, bezier: BezierCanvas, slopefield: SlopeFieldCanvas,
   complexroots: ComplexRootsCanvas, cobweb: CobwebCanvas, conic: ConicCanvas,
-  epicycle: EpicycleCanvas
+  epicycle: EpicycleCanvas,
+
+  // 3D WebGL
+  topography: TopographyCanvas, lorenz3d: Lorenz3DCanvas,
 };
 
 export default function SimulatorCanvas({ simulator, values }) {
