@@ -128,7 +128,7 @@ export default function Dashboard({ user, onLogout, onOpenSimulator }) {
           </div>
 
           {/* Right: Stats sidebar */}
-          <div className="lg:w-72 xl:w-80 flex-shrink-0">
+          <div className="lg:w-72 xl:w-80 flex-shrink-0 mt-5">
             <div className="lg:sticky lg:top-24 space-y-4">
               <h2 className="text-xs uppercase tracking-widest text-slate-500 mb-2">Your Stats</h2>
               <StatCard label="Simulators Run" value={userData?.simulatorsRan || 0} accent="#22d3ee" />

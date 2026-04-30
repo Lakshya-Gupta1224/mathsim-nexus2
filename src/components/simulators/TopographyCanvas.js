@@ -1,8 +1,8 @@
 // TopographyCanvas.js — Interactive 3D surface for multivariable calculus
-import React, { useRef, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Text, Environment } from '@react-three/drei';
-import * as THREE from 'three';
+import React, { useRef, useMemo } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls, Text, Environment } from "@react-three/drei";
+import * as THREE from "three";
 
 function Surface({ fn, accent, xRange, yRange, resolution }) {
   const meshRef = useRef();
@@ -11,14 +11,12 @@ function Surface({ fn, accent, xRange, yRange, resolution }) {
 
   const { geometry, colors } = useMemo(() => {
     const segs = resolution;
-    const geom = new THREE.PlaneGeometry(
-      xMax - xMin, yMax - yMin,
-      segs, segs
-    );
+    const geom = new THREE.PlaneGeometry(xMax - xMin, yMax - yMin, segs, segs);
 
     const positions = geom.attributes.position;
     const colorArr = new Float32Array(positions.count * 3);
-    let zMin = Infinity, zMax = -Infinity;
+    let zMin = Infinity,
+      zMax = -Infinity;
 
     // First pass: compute z values
     const zValues = [];
@@ -36,9 +34,9 @@ function Surface({ fn, accent, xRange, yRange, resolution }) {
     // Second pass: set z positions and vertex colors
     const range = zMax - zMin || 1;
     const accentColor = new THREE.Color(accent);
-    const lowColor = new THREE.Color('#1e3a5f');
+    const lowColor = new THREE.Color("#1e3a5f");
     const highColor = accentColor;
-    const peakColor = new THREE.Color('#ffffff');
+    const peakColor = new THREE.Color("#ffffff");
 
     for (let i = 0; i < positions.count; i++) {
       positions.setZ(i, zValues[i] * 0.5);
@@ -54,7 +52,7 @@ function Surface({ fn, accent, xRange, yRange, resolution }) {
       colorArr[i * 3 + 2] = color.b;
     }
 
-    geom.setAttribute('color', new THREE.BufferAttribute(colorArr, 3));
+    geom.setAttribute("color", new THREE.BufferAttribute(colorArr, 3));
     geom.computeVertexNormals();
 
     return { geometry: geom, colors: colorArr };
@@ -85,10 +83,7 @@ function WireframeSurface({ fn, xRange, yRange, resolution }) {
 
   const geometry = useMemo(() => {
     const segs = Math.floor(resolution / 2);
-    const geom = new THREE.PlaneGeometry(
-      xMax - xMin, yMax - yMin,
-      segs, segs
-    );
+    const geom = new THREE.PlaneGeometry(xMax - xMin, yMax - yMin, segs, segs);
     const positions = geom.attributes.position;
     for (let i = 0; i < positions.count; i++) {
       const x = positions.getX(i) + (xMax + xMin) / 2;
@@ -104,7 +99,12 @@ function WireframeSurface({ fn, xRange, yRange, resolution }) {
 
   return (
     <mesh geometry={geometry} rotation={[-Math.PI / 2.5, 0, 0]}>
-      <meshBasicMaterial wireframe color="rgba(255,255,255,0.1)" transparent opacity={0.08} />
+      <meshBasicMaterial
+        wireframe
+        color="rgba(255,255,255,0.1)"
+        transparent
+        opacity={0.08}
+      />
     </mesh>
   );
 }
@@ -113,20 +113,25 @@ export default function TopographyCanvas({ values, accent }) {
   const { a, b, c: cVal } = values;
 
   const fn = useMemo(() => {
-    return (x, y) => a * Math.sin(x * b) * Math.cos(y * cVal) + 
-                      Math.sin(Math.sqrt(x * x + y * y)) * 0.5;
+    return (x, y) =>
+      a * Math.sin(x * b) * Math.cos(y * cVal) +
+      Math.sin(Math.sqrt(x * x + y * y)) * 0.5;
   }, [a, b, cVal]);
 
   return (
-    <div className="w-full rounded-xl overflow-hidden" style={{ height: 'calc(100vh - 160px)', minHeight: 400, background: '#0a0f1a' }}>
-      <Canvas
-        camera={{ position: [5, 3.5, 5], fov: 50 }}
-        dpr={[1, 2]}
-      >
+    <div
+      className="w-full rounded-xl overflow-hidden"
+      style={{
+        height: "calc(100vh - 160px)",
+        minHeight: 400,
+        background: "#0a0f1a",
+      }}
+    >
+      <Canvas camera={{ position: [6, 4, 6], fov: 50 }} dpr={[1, 2]}>
         <ambientLight intensity={0.3} />
         <directionalLight position={[5, 10, 5]} intensity={0.8} />
         <pointLight position={[-5, 5, -5]} intensity={0.4} color="#22d3ee" />
-        
+
         <Surface
           fn={fn}
           accent={accent}
@@ -142,12 +147,33 @@ export default function TopographyCanvas({ values, accent }) {
         />
 
         {/* Grid helper */}
-        <gridHelper args={[8, 16, '#1e293b', '#0f172a']} position={[0, -2.5, 0]} />
-        
+        <gridHelper
+          args={[8, 16, "#1e293b", "#0f172a"]}
+          position={[0, -2.5, 0]}
+        />
+
         {/* Axis labels */}
-        <Text position={[4.5, -2.5, 0]} fontSize={0.3} color="rgba(255,255,255,0.3)">X</Text>
-        <Text position={[0, -2.5, 4.5]} fontSize={0.3} color="rgba(255,255,255,0.3)">Y</Text>
-        <Text position={[0, 2.5, 0]} fontSize={0.3} color="rgba(255,255,255,0.3)">Z</Text>
+        <Text
+          position={[4.5, -2.5, 0]}
+          fontSize={0.3}
+          color="rgba(255,255,255,0.3)"
+        >
+          X
+        </Text>
+        <Text
+          position={[0, -2.5, 4.5]}
+          fontSize={0.3}
+          color="rgba(255,255,255,0.3)"
+        >
+          Y
+        </Text>
+        <Text
+          position={[0, 2.5, 0]}
+          fontSize={0.3}
+          color="rgba(255,255,255,0.3)"
+        >
+          Z
+        </Text>
 
         <OrbitControls
           enableDamping
