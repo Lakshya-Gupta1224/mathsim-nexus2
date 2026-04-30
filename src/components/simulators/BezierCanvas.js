@@ -4,7 +4,7 @@ import ZoomControls from './ZoomControls';
 import { clearCanvas, drawAxes, drawDot, drawGrid } from './canvasUtils';
 
 export default function BezierCanvas({ values, accent }) {
-  const { cx, cy } = values;
+  const { cx, cy, shiftX = 0, shiftY = 0 } = values;
   
   const { canvasRef, zoom, zoomIn, zoomOut, resetView } = useInteractiveCanvas((ctx, w, h, zm, panX, panY) => {
     const ox = w / 2 + panX, oy = h / 2 + panY, s = 80 * zm; 
@@ -12,7 +12,9 @@ export default function BezierCanvas({ values, accent }) {
     drawGrid(ctx, w, h, s, s, ox, oy, 1);
     drawAxes(ctx, w, h, ox, oy);
     
-    const p0 = { x: -2, y: -1 }, p1 = { x: cx, y: cy }, p2 = { x: 2, y: 1 };
+    const p0 = { x: -2 + shiftX, y: -1 + shiftY }, 
+          p1 = { x: cx + shiftX, y: cy + shiftY }, 
+          p2 = { x: 2 + shiftX, y: 1 + shiftY };
     
     ctx.strokeStyle = 'rgba(255,255,255,0.2)'; 
     ctx.beginPath(); 
@@ -29,7 +31,7 @@ export default function BezierCanvas({ values, accent }) {
     ctx.stroke();
     
     drawDot(ctx, ox + p1.x * s, oy - p1.y * s, 6, '#f97316');
-  }, [cx, cy, accent]); 
+  }, [cx, cy, shiftX, shiftY, accent]); 
   
   return (
     <div className="relative">

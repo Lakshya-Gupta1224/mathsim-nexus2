@@ -2,17 +2,17 @@
 
 export const SIMULATORS = [
   // ─── ALGEBRA ───────────────────────────────────────────
-  { id: 'linear', title: 'Linear Explorer', category: 'Algebra', description: 'Explore slope and intercept in y = mx + c.', icon: '📐', color: 'from-cyan-500/20 to-blue-500/20', accent: '#22d3ee', sliders: [{ key: 'm', label: 'Slope (m)', min: -5, max: 5, step: 0.1, default: 1 }, { key: 'c', label: 'Intercept (c)', min: -10, max: 10, step: 0.5, default: 0 }] },
-  { id: 'parabola', title: 'Parabola Shifter', category: 'Algebra', description: 'Vertex form: y = a(x−h)² + k.', icon: '∪', color: 'from-blue-500/20 to-indigo-500/20', accent: '#6366f1', sliders: [{ key: 'a', label: 'Stretch (a)', min: -3, max: 3, step: 0.1, default: 1 }, { key: 'h', label: 'Shift H (h)', min: -5, max: 5, step: 0.5, default: 0 }, { key: 'k', label: 'Shift V (k)', min: -5, max: 5, step: 0.5, default: 0 }] },
-  { id: 'polynomial', title: 'Polynomial Wiggler', category: 'Algebra', description: 'Build (x−r₁)(x−r₂)(x−r₃)(x−r₄) from roots.', icon: '〜', color: 'from-violet-500/20 to-purple-500/20', accent: '#8b5cf6', sliders: [{ key: 'r1', label: 'Root r₁', min: -5, max: 5, step: 0.5, default: -3 }, { key: 'r2', label: 'Root r₂', min: -5, max: 5, step: 0.5, default: -1 }, { key: 'r3', label: 'Root r₃', min: -5, max: 5, step: 0.5, default: 1 }, { key: 'r4', label: 'Root r₄', min: -5, max: 5, step: 0.5, default: 3 }] },
-  { id: 'logarithm', title: 'Logarithmic Base', category: 'Algebra', description: 'See how y = logᵦ(x) changes with base b.', icon: 'ln', color: 'from-sky-500/20 to-cyan-500/20', accent: '#0ea5e9', sliders: [{ key: 'b', label: 'Base (b)', min: 1.1, max: 20, step: 0.1, default: Math.E }] },
+  { id: 'linear', title: 'Linear Explorer', category: 'Algebra', description: 'Explore slope and intercept in y = mx + c.', icon: '📐', color: 'from-cyan-500/20 to-blue-500/20', accent: '#22d3ee', sliders: [{ key: 'm', label: 'Slope (m)', min: -5, max: 5, step: 0.1, default: 1 }, { key: 'c', label: 'Intercept (c)', min: -10, max: 10, step: 0.5, default: 0 }, { key: 'shiftX', label: 'Shift X', min: -50, max: 50, step: 0.5, default: 0 }, { key: 'shiftY', label: 'Shift Y', min: -50, max: 50, step: 0.5, default: 0 }] },
+  { id: 'parabola', title: 'Parabola Shifter', category: 'Algebra', description: 'Vertex form: y = a(x−h)² + k.', icon: '∪', color: 'from-blue-500/20 to-indigo-500/20', accent: '#6366f1', sliders: [{ key: 'a', label: 'Stretch (a)', min: -3, max: 3, step: 0.1, default: 1 }, { key: 'h', label: 'Shift H (h)', min: -5, max: 5, step: 0.5, default: 0 }, { key: 'k', label: 'Shift V (k)', min: -5, max: 5, step: 0.5, default: 0 }, { key: 'shiftX', label: 'Shift X', min: -50, max: 50, step: 0.5, default: 0 }, { key: 'shiftY', label: 'Shift Y', min: -50, max: 50, step: 0.5, default: 0 }] },
+  { id: 'polynomial', title: 'Polynomial Wiggler', category: 'Algebra', description: 'Build (x−r₁)(x−r₂)(x−r₃)(x−r₄) from roots.', icon: '〜', color: 'from-violet-500/20 to-purple-500/20', accent: '#8b5cf6', sliders: [{ key: 'r1', label: 'Root r₁', min: -5, max: 5, step: 0.5, default: -3 }, { key: 'r2', label: 'Root r₂', min: -5, max: 5, step: 0.5, default: -1 }, { key: 'r3', label: 'Root r₃', min: -5, max: 5, step: 0.5, default: 1 }, { key: 'r4', label: 'Root r₄', min: -5, max: 5, step: 0.5, default: 3 }, { key: 'shiftX', label: 'Shift X', min: -50, max: 50, step: 0.5, default: 0 }, { key: 'shiftY', label: 'Shift Y', min: -50, max: 50, step: 0.5, default: 0 }] },
+  { id: 'logarithm', title: 'Logarithmic Base', category: 'Algebra', description: 'See how y = logᵦ(x) changes with base b.', icon: 'ln', color: 'from-sky-500/20 to-cyan-500/20', accent: '#0ea5e9', sliders: [{ key: 'b', label: 'Base (b)', min: 1.1, max: 20, step: 0.1, default: Math.E }, { key: 'shiftX', label: 'Shift X', min: -50, max: 50, step: 0.5, default: 0 }, { key: 'shiftY', label: 'Shift Y', min: -50, max: 50, step: 0.5, default: 0 }] },
   { id: 'systemsolver', title: 'System Solver', category: 'Algebra', description: 'Find intersection of a₁x+b₁y=c₁ and a₂x+b₂y=c₂.', icon: '∩', color: 'from-teal-500/20 to-emerald-500/20', accent: '#14b8a6', sliders: [{ key: 'a1', label: 'Line 1 slope a₁', min: -5, max: 5, step: 0.5, default: 1 }, { key: 'b1', label: 'Line 1 offset b₁', min: -5, max: 5, step: 0.5, default: 2 }, { key: 'a2', label: 'Line 2 slope a₂', min: -5, max: 5, step: 0.5, default: -1 }, { key: 'b2', label: 'Line 2 offset b₂', min: -5, max: 5, step: 0.5, default: -1 }] },
   { id: 'complexroots', title: 'Roots of Unity', category: 'Algebra', description: 'Solutions to z^n = 1 on the complex plane.', icon: 'ℂ', color: 'from-fuchsia-500/20 to-purple-500/20', accent: '#d946ef', sliders: [{key:'n',label:'Degree n',min:1,max:12,step:1,default:3}] },
   
   // ─── TRIGONOMETRY ─────────────────────────────────────
   { id: 'unitcircle', title: 'Unit Circle', category: 'Trigonometry', description: 'Spin θ to see sin and cos projections live.', icon: '○', color: 'from-amber-500/20 to-orange-500/20', accent: '#f59e0b', sliders: [{ key: 'theta', label: 'Angle θ (deg)', min: 0, max: 360, step: 1, default: 45 }] },
-  { id: 'wavemaker', title: 'Wave Maker', category: 'Trigonometry', description: 'y = A·sin(ωx + φ) — control all three.', icon: '≋', color: 'from-orange-500/20 to-red-500/20', accent: '#f97316', sliders: [{ key: 'A', label: 'Amplitude (A)', min: 0.1, max: 5, step: 0.1, default: 1 }, { key: 'omega', label: 'Frequency (ω)', min: 0.1, max: 5, step: 0.1, default: 1 }, { key: 'phi', label: 'Phase (φ)', min: -Math.PI, max: Math.PI, step: 0.1, default: 0 }] },
-  { id: 'fourier', title: 'Fourier Series', category: 'Trigonometry', description: 'Add 3 harmonics to build a complex waveform.', icon: 'Hz', color: 'from-rose-500/20 to-pink-500/20', accent: '#e11d48', sliders: [{ key: 'h1', label: 'Harmonic 1', min: 0, max: 2, step: 0.05, default: 1 }, { key: 'h2', label: 'Harmonic 3', min: 0, max: 2, step: 0.05, default: 0.33 }, { key: 'h3', label: 'Harmonic 5', min: 0, max: 2, step: 0.05, default: 0.2 }] },
+  { id: 'wavemaker', title: 'Wave Maker', category: 'Trigonometry', description: 'y = A·sin(ωx + φ) — control all three.', icon: '≋', color: 'from-orange-500/20 to-red-500/20', accent: '#f97316', sliders: [{ key: 'A', label: 'Amplitude (A)', min: 0.1, max: 5, step: 0.1, default: 1 }, { key: 'omega', label: 'Frequency (ω)', min: 0.1, max: 5, step: 0.1, default: 1 }, { key: 'phi', label: 'Phase (φ)', min: -Math.PI, max: Math.PI, step: 0.1, default: 0 }, { key: 'shiftX', label: 'Shift X', min: -50, max: 50, step: 0.5, default: 0 }, { key: 'shiftY', label: 'Shift Y', min: -50, max: 50, step: 0.5, default: 0 }] },
+  { id: 'fourier', title: 'Fourier Series', category: 'Trigonometry', description: 'Add 3 harmonics to build a complex waveform.', icon: 'Hz', color: 'from-rose-500/20 to-pink-500/20', accent: '#e11d48', sliders: [{ key: 'h1', label: 'Harmonic 1', min: 0, max: 2, step: 0.05, default: 1 }, { key: 'h2', label: 'Harmonic 3', min: 0, max: 2, step: 0.05, default: 0.33 }, { key: 'h3', label: 'Harmonic 5', min: 0, max: 2, step: 0.05, default: 0.2 }, { key: 'shiftX', label: 'Shift X', min: -50, max: 50, step: 0.5, default: 0 }, { key: 'shiftY', label: 'Shift Y', min: -50, max: 50, step: 0.5, default: 0 }] },
   { id: 'triangle', title: 'Triangle Flexer', category: 'Trigonometry', description: 'Law of cosines: solve for third side.', icon: '△', color: 'from-pink-500/20 to-fuchsia-500/20', accent: '#ec4899', sliders: [{ key: 'a', label: 'Side a', min: 1, max: 10, step: 0.5, default: 5 }, { key: 'b', label: 'Side b', min: 1, max: 10, step: 0.5, default: 5 }, { key: 'C', label: 'Angle C (deg)', min: 1, max: 179, step: 1, default: 60 }] },
   { id: 'tangentvis', title: 'Tangent Visualizer', category: 'Trigonometry', description: 'See the geometric tangent length on the unit circle.', icon: 'tan', color: 'from-fuchsia-500/20 to-violet-500/20', accent: '#d946ef', sliders: [{ key: 'theta', label: 'Angle θ (deg)', min: -85, max: 85, step: 1, default: 30 }] },
   { id: 'polarrose', title: 'Polar Rose', category: 'Trigonometry', description: 'r = cos(kθ)', icon: '❀', color: 'from-rose-500/20 to-pink-500/20', accent: '#f43f5e', sliders: [{key:'k',label:'k (Petals)',min:1,max:10,step:1,default:2}] },
@@ -36,8 +36,8 @@ export const SIMULATORS = [
   { id: 'regression', title: 'Linear Regression', category: 'Geometry & Advanced', description: 'Adjust data correlation and watch the best-fit line adapt.', icon: 'r²', color: 'from-purple-500/20 to-pink-500/20', accent: '#c084fc', sliders: [{ key: 'corr', label: 'Correlation (r)', min: -1, max: 1, step: 0.05, default: 0.8 }, { key: 'noise', label: 'Noise level', min: 0, max: 2, step: 0.1, default: 0.5 }] },
   { id: 'lorenz', title: 'Lorenz Attractor', category: 'Chaos', description: 'Tweak σ, ρ, β to reveal chaotic beauty.', icon: '∞', color: 'from-red-500/20 to-orange-500/20', accent: '#ef4444', sliders: [{ key: 'sigma', label: 'Sigma (σ)', min: 1, max: 20, step: 0.5, default: 10 }, { key: 'rho', label: 'Rho (ρ)', min: 1, max: 50, step: 0.5, default: 28 }, { key: 'beta', label: 'Beta (β)', min: 0.5, max: 5, step: 0.1, default: 2.667 }] },
   { id: 'lissajous', title: 'Lissajous Curves', category: 'Geometry & Advanced', description: 'Parametric equations x=sin(at+δ), y=sin(bt)', icon: '➰', color: 'from-purple-500/20 to-indigo-500/20', accent: '#8b5cf6', sliders: [{key:'a',label:'Freq a',min:1,max:10,step:1,default:3},{key:'b',label:'Freq b',min:1,max:10,step:1,default:2},{key:'delta',label:'Phase δ',min:0,max:3.14,step:0.1,default:1.5}] },
-  { id: 'bezier', title: 'Bezier Curve', category: 'Geometry & Advanced', description: 'Quadratic control point manipulation.', icon: '〰', color: 'from-amber-500/20 to-orange-500/20', accent: '#f59e0b', sliders: [{key:'cx',label:'Control X',min:-5,max:5,step:0.5,default:0},{key:'cy',label:'Control Y',min:-5,max:5,step:0.5,default:-3}] },
-  { id: 'conic', title: 'Conic Sections', category: 'Geometry & Advanced', description: 'Shape evolution based on eccentricity (e).', icon: '◖', color: 'from-lime-500/20 to-green-500/20', accent: '#84cc16', sliders: [{key:'e',label:'Eccentricity e',min:0,max:2,step:0.1,default:0.5}] },
+  { id: 'bezier', title: 'Bezier Curve', category: 'Geometry & Advanced', description: 'Quadratic control point manipulation.', icon: '〰', color: 'from-amber-500/20 to-orange-500/20', accent: '#f59e0b', sliders: [{key:'cx',label:'Control X',min:-5,max:5,step:0.5,default:0},{key:'cy',label:'Control Y',min:-5,max:5,step:0.5,default:-3}, { key: 'shiftX', label: 'Shift X', min: -50, max: 50, step: 0.5, default: 0 }, { key: 'shiftY', label: 'Shift Y', min: -50, max: 50, step: 0.5, default: 0 }] },
+  { id: 'conic', title: 'Conic Sections', category: 'Geometry & Advanced', description: 'Shape evolution based on eccentricity (e).', icon: '◖', color: 'from-lime-500/20 to-green-500/20', accent: '#84cc16', sliders: [{key:'e',label:'Eccentricity e',min:0,max:2,step:0.1,default:0.5}, { key: 'shiftX', label: 'Shift X', min: -50, max: 50, step: 0.5, default: 0 }, { key: 'shiftY', label: 'Shift Y', min: -50, max: 50, step: 0.5, default: 0 }] },
   { id: 'epicycle', title: 'Epicycles', category: 'Geometry & Advanced', description: 'Circles rolling on circles.', icon: '◎', color: 'from-violet-500/20 to-fuchsia-500/20', accent: '#a855f7', sliders: [{key:'f1',label:'Frequency 1',min:-5,max:5,step:1,default:1},{key:'f2',label:'Frequency 2',min:-5,max:5,step:1,default:3}] },
   { id: 'cobweb', title: 'Logistic Map', category: 'Chaos', description: 'Cobweb plot for x = rx(1-x).', icon: '🕸', color: 'from-red-500/20 to-rose-500/20', accent: '#e11d48', sliders: [{key:'r',label:'Growth Rate r',min:1,max:4,step:0.01,default:2.8},{key:'x0',label:'Initial x₀',min:0.01,max:0.99,step:0.01,default:0.2}] },
 
@@ -91,29 +91,31 @@ export const CATEGORIES = [...new Set(SIMULATORS.map(s => s.category))];
 // Curve function factories for Marble Run mode
 // Each returns (values) => (x) => y, producing a curve function from slider values
 export const CURVE_FN_FACTORIES = {
-  linear:     (v) => (x) => v.m * x + v.c,
-  parabola:   (v) => (x) => v.a * (x - v.h) ** 2 + v.k,
-  polynomial: (v) => (x) => (x - v.r1) * (x - v.r2) * (x - v.r3) * (x - v.r4) / 10,
-  logarithm:  (v) => (x) => x > 0.05 ? Math.log(x) / Math.log(v.b) : -10,
-  wavemaker:  (v) => (x) => v.A * Math.sin(v.omega * x + v.phi),
-  fourier:    (v) => (x) => v.h1 * Math.sin(x) + v.h2 * Math.sin(3 * x) + v.h3 * Math.sin(5 * x),
+  linear:     (v) => (x) => v.m * (x - (v.shiftX || 0)) + v.c + (v.shiftY || 0),
+  parabola:   (v) => (x) => v.a * (x - v.h - (v.shiftX || 0)) ** 2 + v.k + (v.shiftY || 0),
+  polynomial: (v) => (x) => (x - (v.shiftX || 0) - v.r1) * (x - (v.shiftX || 0) - v.r2) * (x - (v.shiftX || 0) - v.r3) * (x - (v.shiftX || 0) - v.r4) / 10 + (v.shiftY || 0),
+  logarithm:  (v) => (x) => (x - (v.shiftX || 0)) > 0.05 ? Math.log(x - (v.shiftX || 0)) / Math.log(v.b) + (v.shiftY || 0) : -10,
+  wavemaker:  (v) => (x) => v.A * Math.sin(v.omega * (x - (v.shiftX || 0)) + v.phi) + (v.shiftY || 0),
+  fourier:    (v) => (x) => v.h1 * Math.sin(x - (v.shiftX || 0)) + v.h2 * Math.sin(3 * (x - (v.shiftX || 0))) + v.h3 * Math.sin(5 * (x - (v.shiftX || 0))) + (v.shiftY || 0),
   bezier:     (v) => (x) => {
     // Approximate quadratic bezier as function of x
-    const t = (x + 2) / 4; // map x from [-2,2] to t in [0,1]
+    const sx = x - (v.shiftX || 0);
+    const t = (sx + 2) / 4; // map x from [-2,2] to t in [0,1]
     if (t < 0 || t > 1) return -10;
     const p0y = -1, p1y = v.cy, p2y = 1;
-    return (1-t)*(1-t)*p0y + 2*(1-t)*t*p1y + t*t*p2y;
+    return (1-t)*(1-t)*p0y + 2*(1-t)*t*p1y + t*t*p2y + (v.shiftY || 0);
   },
   conic:      (v) => (x) => {
     // Approximate conic section as y = f(x)
     const e = v.e;
     const a = e * 5;
+    const sx = x - (v.shiftX || 0);
     if (e < 1) { // ellipse
       const b = a * Math.sqrt(1 - e * e);
-      const val = 1 - (x * x) / (a * a);
-      return val > 0 ? b * Math.sqrt(val) : 0;
+      const val = 1 - (sx * sx) / (a * a);
+      return val > 0 ? b * Math.sqrt(val) + (v.shiftY || 0) : (v.shiftY || 0);
     }
-    return a / (1 + Math.abs(x)); // fallback
+    return a / (1 + Math.abs(sx)) + (v.shiftY || 0); // fallback
   },
 };
 

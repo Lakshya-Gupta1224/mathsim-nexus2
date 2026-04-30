@@ -5,8 +5,8 @@ import ZoomControls from './ZoomControls';
 import { clearCanvas, drawGrid, drawAxes, plotFunction, drawDot, labelAt } from './canvasUtils';
 
 export function PolynomialCanvas({ values, accent }) {
-  const { r1, r2, r3, r4 } = values;
-  const fn = x => (x - r1) * (x - r2) * (x - r3) * (x - r4) / 10;
+  const { r1, r2, r3, r4, shiftX = 0, shiftY = 0 } = values;
+  const fn = x => (x - shiftX - r1) * (x - shiftX - r2) * (x - shiftX - r3) * (x - shiftX - r4) / 10 + shiftY;
   const { canvasRef, zoom, zoomIn, zoomOut, resetView } = useInteractiveCanvas((ctx, w, h, zm, panX, panY) => {
     const s = 35 * zm;
     const ox = w / 2 + panX, oy = h / 2 + panY;
@@ -14,9 +14,9 @@ export function PolynomialCanvas({ values, accent }) {
     drawGrid(ctx, w, h, s, s, ox, oy);
     drawAxes(ctx, w, h, ox, oy);
     plotFunction(ctx, fn, -w / (2 * s) - 1, w / (2 * s) + 1, 500, ox, oy, s, s, accent, 2.5);
-    [r1, r2, r3, r4].forEach(r => drawDot(ctx, ox + r * s, oy, 5, accent));
-    labelAt(ctx, `Roots: ${[r1,r2,r3,r4].map(r=>r.toFixed(1)).join(', ')}`, 10, 20, accent, 12);
-  }, [r1, r2, r3, r4, accent]);
+    [r1, r2, r3, r4].forEach(r => drawDot(ctx, ox + (r + shiftX) * s, oy - shiftY * s, 5, accent));
+    labelAt(ctx, `Roots: ${[r1,r2,r3,r4].map(r=>(r + shiftX).toFixed(1)).join(', ')}`, 10, 20, accent, 12);
+  }, [r1, r2, r3, r4, shiftX, shiftY, accent]);
 
   return (
     <div className="relative">
