@@ -30,7 +30,7 @@ function Surface({ fn, xRange, yRange, resolution, accent }) {
 
   const { geometry } = useMemo(() => {
     const segs = resolution;
-    const geom = new THREE.PlaneGeometry(xMax - xMin, yMax - yMin, segs, segs);
+    const geom = new THREE.PlaneGeometry((xMax - xMin) * 1.2, (yMax - yMin) * 1.2, segs, segs);
     const positions = geom.attributes.position;
     const colorArr = new Float32Array(positions.count * 3);
     
@@ -169,7 +169,7 @@ export default function GradientDescent3DCanvas({ values, accent }) {
   };
 
   return (
-    <div className="w-full relative rounded-[12px] overflow-hidden border-2 border-[#1C1C1C]" style={{ height: 'calc(100vh - 160px)', minHeight: 400, background: '#F8F6F3', boxShadow: '4px 4px 0px #1C1C1C' }}>
+    <div className="w-full relative rounded-[12px] overflow-hidden border-2 border-[#1C1C1C]" style={{ height: '70vh', minHeight: 500, background: '#F8F6F3', boxShadow: '4px 4px 0px #1C1C1C' }}>
       
       {/* UI Overlay Controls */}
       <div className="absolute top-4 left-4 z-10 flex gap-2">
@@ -211,7 +211,7 @@ export default function GradientDescent3DCanvas({ values, accent }) {
         )}
       </div>
 
-      <Canvas camera={{ position: [6, 6, 8], fov: 50 }} dpr={[1, 2]}>
+      <Canvas camera={{ position: [6, 3, 8], fov: 55 }} dpr={[1, 2]}>
         <ambientLight intensity={0.5} />
         <directionalLight position={[5, 10, 5]} intensity={1.0} />
         <pointLight position={[-5, 5, -5]} intensity={0.6} color="#F59D8A" />
@@ -220,9 +220,9 @@ export default function GradientDescent3DCanvas({ values, accent }) {
         <Agent points={points} setPoints={setPoints} playing={playing} alpha={alpha} costData={costData} />
 
         {/* Grid helper moved down slightly to avoid z-fighting with z=0 parts of surface */}
-        <gridHelper args={[10, 20, '#1C1C1C', 'rgba(28,28,28,0.1)']} position={[0, -0.01, 0]} />
+        <gridHelper args={[10, 20, '#1C1C1C', 'rgba(28,28,28,0.1)']} position={[0, -0.2, 0]} />
 
-        <OrbitControls enableDamping dampingFactor={0.05} rotateSpeed={0.5} minDistance={2} maxDistance={20} />
+        <OrbitControls enableDamping dampingFactor={0.05} rotateSpeed={0.5} minDistance={2} maxDistance={20} target={[0, 2, 0]} />
       </Canvas>
     </div>
   );

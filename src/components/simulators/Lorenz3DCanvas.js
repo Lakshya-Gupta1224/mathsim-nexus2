@@ -20,7 +20,7 @@ function AttractorTrail({ sigma, rho, beta, maxSteps, currentStep, accent }) {
     let x = 0.1, y = 0, z = 0;
     for (let i = 0; i < maxSteps; i++) {
       [x, y, z] = lorenzStep(x, y, z, sigma, rho, beta);
-      pts.push(new THREE.Vector3(x * 0.1, z * 0.1 - 2, y * 0.1));
+      pts.push(new THREE.Vector3(x * 0.15, z * 0.15 - 2, y * 0.15));
     }
     return pts;
   }, [sigma, rho, beta, maxSteps]);
@@ -28,7 +28,7 @@ function AttractorTrail({ sigma, rho, beta, maxSteps, currentStep, accent }) {
   // Create gradient colors
   const colors = useMemo(() => {
     const accentColor = new THREE.Color(accent);
-    const startColor = new THREE.Color('#F8F6F3');
+    const startColor = new THREE.Color('#ffdaa2');
     const midColor = new THREE.Color('#F59D8A');
     const endColor = new THREE.Color('#1C1C1C');
     const arr = new Float32Array(maxSteps * 3);
@@ -132,8 +132,8 @@ export default function Lorenz3DCanvas({ values, accent }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="w-full rounded-[12px] overflow-hidden border-2 border-[#1C1C1C]" style={{ height: 'calc(100vh - 210px)', minHeight: 400, background: '#F8F6F3', boxShadow: '4px 4px 0px #1C1C1C' }}>
-        <Canvas camera={{ position: [4, 2.5, 4], fov: 50 }} dpr={[1, 2]}>
+      <div className="w-full rounded-[12px] overflow-hidden border-2 border-[#1C1C1C]" style={{ height: '70vh', minHeight: 500, background: '#F8F6F3', boxShadow: '4px 4px 0px #1C1C1C' }}>
+        <Canvas camera={{ position: [4, 3.5, 4], fov: 55 }} dpr={[1, 2]}>
           <ambientLight intensity={0.2} />
           <pointLight position={[5, 10, 5]} intensity={0.8} color="#F59D8A" />
           <pointLight position={[-3, 5, -3]} intensity={0.5} color="#CFA8B8" />
@@ -147,7 +147,7 @@ export default function Lorenz3DCanvas({ values, accent }) {
             accent={accent}
           />
           
-          <gridHelper args={[8, 16, '#1C1C1C', 'rgba(28,28,28,0.1)']} position={[0, -2, 0]} />
+          <gridHelper args={[8, 16, '#1C1C1C', 'rgba(28,28,28,0.1)']} position={[0, -2.3, 0]} />
           <AxisLabels />
           
           <OrbitControls enableDamping dampingFactor={0.05} rotateSpeed={0.5} minDistance={2} maxDistance={20} />

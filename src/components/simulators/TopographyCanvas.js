@@ -11,7 +11,7 @@ function Surface({ fn, accent, xRange, yRange, resolution }) {
 
   const { geometry, colors } = useMemo(() => {
     const segs = resolution;
-    const geom = new THREE.PlaneGeometry(xMax - xMin, yMax - yMin, segs, segs);
+    const geom = new THREE.PlaneGeometry((xMax - xMin) * 1.2, (yMax - yMin) * 1.2, segs, segs);
 
     const positions = geom.attributes.position;
     const colorArr = new Float32Array(positions.count * 3);
@@ -39,7 +39,7 @@ function Surface({ fn, accent, xRange, yRange, resolution }) {
     const peakColor = new THREE.Color("#F59D8A");
 
     for (let i = 0; i < positions.count; i++) {
-      positions.setZ(i, zValues[i] * 0.5);
+      positions.setZ(i, zValues[i] * 0.8);
       const t = (zValues[i] - zMin) / range;
       let color;
       if (t < 0.5) {
@@ -83,7 +83,7 @@ function WireframeSurface({ fn, xRange, yRange, resolution }) {
 
   const geometry = useMemo(() => {
     const segs = Math.floor(resolution / 2);
-    const geom = new THREE.PlaneGeometry(xMax - xMin, yMax - yMin, segs, segs);
+    const geom = new THREE.PlaneGeometry((xMax - xMin) * 1.2, (yMax - yMin) * 1.2, segs, segs);
     const positions = geom.attributes.position;
     for (let i = 0; i < positions.count; i++) {
       const x = positions.getX(i) + (xMax + xMin) / 2;
@@ -91,7 +91,7 @@ function WireframeSurface({ fn, xRange, yRange, resolution }) {
       let z = fn(x, y);
       if (!isFinite(z)) z = 0;
       z = Math.max(-5, Math.min(5, z));
-      positions.setZ(i, z * 0.5);
+      positions.setZ(i, z * 0.8);
     }
     geom.computeVertexNormals();
     return geom;
@@ -122,13 +122,13 @@ export default function TopographyCanvas({ values, accent }) {
     <div
       className="w-full rounded-[12px] overflow-hidden border-2 border-[#1C1C1C]"
       style={{
-        height: "calc(100vh - 160px)",
-        minHeight: 400,
+        height: "70vh",
+        minHeight: 500,
         background: "#F8F6F3",
         boxShadow: '4px 4px 0px #1C1C1C'
       }}
     >
-      <Canvas camera={{ position: [6, 4, 6], fov: 50 }} dpr={[1, 2]}>
+      <Canvas camera={{ position: [6, 5, 6], fov: 55 }} dpr={[1, 2]}>
         <ambientLight intensity={0.3} />
         <directionalLight position={[5, 10, 5]} intensity={0.8} />
         <pointLight position={[-5, 5, -5]} intensity={0.6} color="#F59D8A" />
@@ -150,7 +150,7 @@ export default function TopographyCanvas({ values, accent }) {
         {/* Grid helper */}
         <gridHelper
           args={[8, 16, "#1C1C1C", "rgba(28,28,28,0.1)"]}
-          position={[0, -2.5, 0]}
+          position={[0, -2.8, 0]}
         />
 
         {/* Axis labels */}
