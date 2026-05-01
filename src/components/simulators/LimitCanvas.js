@@ -18,9 +18,9 @@ export default function LimitCanvas({ values, accent }) {
 
     const xMin = (0 - ox) / s;
     const xMax = (w - ox) / s;
-    plotFunction(ctx, f, xMin, xMax, 400, ox, oy, s, s, 'rgba(255,255,255,0.25)', 1.5);
+    plotFunction(ctx, f, xMin, xMax, 400, ox, oy, s, s, 'rgba(28,28,28,0.35)', 1.5);
     plotFunction(ctx, t => f(x0) + secantSlope * (t - x0), xMin, xMax, 200, ox, oy, s, s, accent, 2.5);
-    plotFunction(ctx, t => f(x0) + trueSlope * (t - x0), xMin, xMax, 200, ox, oy, s, s, 'rgba(255,255,255,0.2)', 1.5);
+    plotFunction(ctx, t => f(x0) + trueSlope * (t - x0), xMin, xMax, 200, ox, oy, s, s, 'rgba(28,28,28,0.3)', 1.5);
 
     const p1x = ox + x0 * s, p1y = oy - f(x0) * s;
     const p2x = ox + (x0 + h) * s, p2y = oy - f(x0 + h) * s;
@@ -34,7 +34,7 @@ export default function LimitCanvas({ values, accent }) {
 
     labelAt(ctx, `h = ${h.toFixed(3)}`, 10, 20, accent, 13);
     labelAt(ctx, `Secant slope = [f(x+h)−f(x)]/h = ${secantSlope.toFixed(4)}`, 10, 38, accent, 11);
-    labelAt(ctx, `True f'(x₀) = 2·${x0} = ${trueSlope.toFixed(4)}`, 10, 56, 'rgba(255,255,255,0.4)', 11);
+    labelAt(ctx, `True f'(x₀) = 2·${x0} = ${trueSlope.toFixed(4)}`, 10, 56, 'rgba(28,28,28,0.6)', 11);
     labelAt(ctx, `Error = ${Math.abs(secantSlope - trueSlope).toFixed(5)}`, 10, 72, 'rgba(255,100,100,0.7)', 11);
   }, [h, x0, accent]);
 

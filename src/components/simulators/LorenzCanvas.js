@@ -70,9 +70,9 @@ export default function LorenzCanvas({ values, accent }) {
       }
       if (st.trail.length > MAX_TRAIL) st.trail = st.trail.slice(-MAX_TRAIL);
 
-      ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#F8F6F3'; ctx.fillRect(0, 0, W, H);
 
-      ctx.strokeStyle = 'rgba(255,255,255,0.04)'; ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(28,28,28,0.1)'; ctx.lineWidth = 1;
       for (let i = 0; i <= 8; i++) {
         const lx = (i / 8) * W;
         ctx.beginPath(); ctx.moveTo(lx, 0); ctx.lineTo(lx, H); ctx.stroke();
@@ -101,7 +101,7 @@ export default function LorenzCanvas({ values, accent }) {
 
       ctx.fillStyle = accent; ctx.font = '13px monospace';
       ctx.fillText(`σ=${s.toFixed(1)}  ρ=${r.toFixed(1)}  β=${b.toFixed(2)}`, 10, 22);
-      ctx.fillStyle = 'rgba(255,255,255,0.3)'; ctx.font = '11px monospace';
+      ctx.fillStyle = 'rgba(28,28,28,0.6)'; ctx.font = '11px monospace';
       ctx.fillText(`XZ projection  |trail=${trail.length}`, 10, 40);
 
       stateRef.current.animId = requestAnimationFrame(render);

@@ -31,7 +31,7 @@ export default function AreaCurveCanvas({ values, accent }) {
     ctx.lineWidth = 1;
     ctx.stroke();
 
-    ctx.setLineDash([4, 4]); ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]); ctx.strokeStyle = 'rgba(28,28,28,0.3)'; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(ox + lo * sx, 0); ctx.lineTo(ox + lo * sx, oy); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(ox + hi * sx, 0); ctx.lineTo(ox + hi * sx, oy); ctx.stroke();
     ctx.setLineDash([]);
@@ -44,9 +44,9 @@ export default function AreaCurveCanvas({ values, accent }) {
     plotFunction(ctx, f, xMin, xMax, 400, ox, oy, sx, sy, accent, 2.5);
 
     labelAt(ctx, `∫ₐᵇ x² dx`, 10, 20, accent, 14);
-    labelAt(ctx, `a = ${a.toFixed(1)},  b = ${b.toFixed(1)}`, 10, 40, 'rgba(255,255,255,0.5)', 12);
+    labelAt(ctx, `a = ${a.toFixed(1)},  b = ${b.toFixed(1)}`, 10, 40, 'rgba(28,28,28,0.7)', 12);
     labelAt(ctx, `Area = ${exact.toFixed(4)}`, 10, 58, accent, 13);
-    labelAt(ctx, `= b³/3 − a³/3`, 10, 76, 'rgba(255,255,255,0.35)', 11);
+    labelAt(ctx, `= b³/3 − a³/3`, 10, 76, 'rgba(28,28,28,0.6)', 11);
   }, [a, b, accent]);
 
   return (

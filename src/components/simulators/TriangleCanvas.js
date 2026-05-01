@@ -55,7 +55,7 @@ export default function TriangleCanvas({ values, accent }) {
     ctx.fillText(`C=${C}°`, vC.x - 30, vC.y + 14);
 
     labelAt(ctx, `Side c = ${c.toFixed(3)}`, 10, 20, accent, 13);
-    labelAt(ctx, `Law of Cosines: c² = a²+b²−2ab·cos(C)`, 10, 38, 'rgba(255,255,255,0.35)', 10);
+    labelAt(ctx, `Law of Cosines: c² = a²+b²−2ab·cos(C)`, 10, 38, 'rgba(28,28,28,0.6)', 10);
   }, [a, b, C, accent]);
 
   return (

@@ -19,20 +19,20 @@ export default function UnitCircleCanvas({ values, accent }) {
 
     // Unit circle
     ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.strokeStyle = 'rgba(28,28,28,0.3)'; ctx.lineWidth = 1.5; ctx.stroke();
 
     const px = cx + cosV * r, py = cy - sinV * r;
 
     // Angle arc
     ctx.beginPath(); ctx.arc(cx, cy, r * 0.25, 0, -rad, rad < 0);
-    ctx.strokeStyle = 'rgba(255,200,0,0.5)'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.strokeStyle = '#F59D8A'; ctx.lineWidth = 2; ctx.stroke();
 
     // cos projection (horizontal dashed)
     ctx.setLineDash([4, 4]);
-    ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#A8D5D2'; ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, cy); ctx.stroke();
     // sin projection (vertical dashed)
-    ctx.strokeStyle = '#f97316';
+    ctx.strokeStyle = '#F59D8A';
     ctx.beginPath(); ctx.moveTo(cx, py); ctx.lineTo(px, py); ctx.stroke();
     ctx.setLineDash([]);
 
@@ -42,17 +42,17 @@ export default function UnitCircleCanvas({ values, accent }) {
 
     // Point
     drawDot(ctx, px, py, 6, accent);
-    drawDot(ctx, cx, cy, 4, 'rgba(255,255,255,0.3)');
+    drawDot(ctx, cx, cy, 4, 'rgba(28,28,28,0.3)');
 
     // Labels
-    labelAt(ctx, `θ = ${theta}°`, 10, 20, 'rgba(255,200,0,0.9)', 13);
-    labelAt(ctx, `cos(θ) = ${cosV.toFixed(3)}`, 10, 38, '#22d3ee', 12);
-    labelAt(ctx, `sin(θ) = ${sinV.toFixed(3)}`, 10, 54, '#f97316', 12);
+    labelAt(ctx, `θ = ${theta}°`, 10, 20, '#F59D8A', 13);
+    labelAt(ctx, `cos(θ) = ${cosV.toFixed(3)}`, 10, 38, '#A8D5D2', 12);
+    labelAt(ctx, `sin(θ) = ${sinV.toFixed(3)}`, 10, 54, '#F59D8A', 12);
     labelAt(ctx, `tan(θ) = ${Math.abs(cosV) > 0.01 ? (sinV / cosV).toFixed(3) : '±∞'}`, 10, 70, accent, 12);
 
-    ctx.fillStyle = '#22d3ee'; ctx.font = '10px monospace';
+    ctx.fillStyle = '#A8D5D2'; ctx.font = '10px monospace';
     ctx.fillText(`cos=${cosV.toFixed(2)}`, px - 20, cy + 14);
-    ctx.fillStyle = '#f97316';
+    ctx.fillStyle = '#F59D8A';
     ctx.fillText(`sin=${sinV.toFixed(2)}`, cx + 6, py - 5);
   }, [theta, accent]);
 

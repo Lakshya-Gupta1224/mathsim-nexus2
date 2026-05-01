@@ -49,19 +49,23 @@ function Surface({ fn, xRange, yRange, resolution, accent }) {
     }
 
     const range = zMax - zMin || 1;
-    const accentColor = new THREE.Color(accent);
-    const lowColor = new THREE.Color("#1e3a5f");
-    const highColor = accentColor;
-    const peakColor = new THREE.Color("#ffffff");
+    const lowColor = new THREE.Color("#F8F6F3");
+    const midColor = new THREE.Color("#F59D8A");
+    const highColor = new THREE.Color("#CFA8B8");
+    const peakColor = new THREE.Color("#A8D5D2");
 
     for (let i = 0; i < positions.count; i++) {
       positions.setZ(i, zValues[i]);
       const t = (zValues[i] - zMin) / range;
       let color;
-      if (t < 0.5) {
-        color = lowColor.clone().lerp(highColor, t * 2);
+      if (t < 0.25) {
+        color = lowColor.clone().lerp(midColor, t * 4);
+      } else if (t < 0.5) {
+        color = midColor.clone().lerp(highColor, (t - 0.25) * 4);
+      } else if (t < 0.75) {
+        color = highColor.clone().lerp(peakColor, (t - 0.5) * 4);
       } else {
-        color = highColor.clone().lerp(peakColor, (t - 0.5) * 2);
+        color = peakColor.clone().lerp(new THREE.Color("#F4F1EA"), (t - 0.75) * 4);
       }
       colorArr[i * 3] = color.r;
       colorArr[i * 3 + 1] = color.g;
@@ -120,14 +124,14 @@ function Agent({ points, setPoints, playing, alpha, costData }) {
   return (
     <group>
       {pathVectors.length > 1 && (
-        <Line points={pathVectors} color="white" lineWidth={3} />
+        <Line points={pathVectors} color="#1C1C1C" lineWidth={4} />
       )}
       <Sphere args={[0.2, 16, 16]} position={[current.x, current.z, -current.y]}>
-        <meshStandardMaterial color="#ef4444" emissive="#ef4444" emissiveIntensity={0.5} />
+        <meshStandardMaterial color="#F59D8A" emissive="#F59D8A" emissiveIntensity={0.3} />
       </Sphere>
       
       {/* Downward light pointing at the agent */}
-      <pointLight position={[current.x, current.z + 1, -current.y]} intensity={0.5} color="#ef4444" distance={3} />
+      <pointLight position={[current.x, current.z + 1, -current.y]} intensity={0.5} color="#F59D8A" distance={3} />
     </group>
   );
 }
@@ -165,53 +169,58 @@ export default function GradientDescent3DCanvas({ values, accent }) {
   };
 
   return (
-    <div className="w-full relative rounded-xl overflow-hidden" style={{ height: 'calc(100vh - 160px)', minHeight: 400, background: '#0a0f1a' }}>
+    <div className="w-full relative rounded-[12px] overflow-hidden border-2 border-[#1C1C1C]" style={{ height: 'calc(100vh - 160px)', minHeight: 400, background: '#F8F6F3', boxShadow: '4px 4px 0px #1C1C1C' }}>
       
       {/* UI Overlay Controls */}
       <div className="absolute top-4 left-4 z-10 flex gap-2">
         <button 
           onClick={() => setPlaying(!playing)}
-          className={`px-4 py-2 rounded-lg font-bold text-sm transition shadow-lg ${playing ? 'bg-red-500/80 hover:bg-red-600/80 text-white' : 'bg-green-500/80 hover:bg-green-600/80 text-white'}`}
+          className={`px-4 py-2 rounded-[8px] font-bold text-sm transition border-2 border-[#1C1C1C] ${
+            playing ? 'bg-[#CFA8B8] text-[#1C1C1C] hover:bg-[#F59D8A]' : 'bg-[#F59D8A] text-[#1C1C1C] hover:bg-[#CFA8B8]'
+          } hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1C1C1C]`}
+          style={{ fontFamily: 'DM Sans, sans-serif', boxShadow: '4px 4px 0px #1C1C1C' }}
         >
           {playing ? '⏸ Pause' : '▶ Play'}
         </button>
         <button 
           onClick={handleStep}
           disabled={playing}
-          className="px-4 py-2 rounded-lg font-bold text-sm bg-blue-500/80 hover:bg-blue-600/80 text-white disabled:opacity-50 transition shadow-lg"
+          className="px-4 py-2 rounded-[8px] font-bold text-sm bg-[#A8D5D2] text-[#1C1C1C] disabled:opacity-50 transition border-2 border-[#1C1C1C] hover:bg-[#CFA8B8] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1C1C1C] disabled:cursor-not-allowed"
+          style={{ fontFamily: 'DM Sans, sans-serif', boxShadow: '4px 4px 0px #1C1C1C' }}
         >
           ⏭ Step
         </button>
         <button 
           onClick={handleReset}
-          className="px-4 py-2 rounded-lg font-bold text-sm bg-slate-700/80 hover:bg-slate-600/80 text-white transition shadow-lg"
+          className="px-4 py-2 rounded-[8px] font-bold text-sm bg-white text-[#1C1C1C] transition border-2 border-[#1C1C1C] hover:bg-[#F4F1EA] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1C1C1C]"
+          style={{ fontFamily: 'DM Sans, sans-serif', boxShadow: '4px 4px 0px #1C1C1C' }}
         >
           ↺ Reset
         </button>
       </div>
 
-      <div className="absolute top-4 right-4 z-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg p-3 text-xs text-slate-300 min-w-32 shadow-xl">
-        <p className="font-bold text-white mb-2 pb-1 border-b border-white/10">{costData.name}</p>
-        <p>Iteration: <span className="font-mono text-cyan-300">{points.length - 1}</span></p>
+      <div className="absolute top-4 right-4 z-10 bg-white border-2 border-[#1C1C1C] rounded-[8px] p-3 text-xs text-[#1C1C1C] min-w-32 shadow-[4px_4px_0px_#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <p className="font-bold text-[#1C1C1C] mb-2 pb-1 border-b-2 border-[#1C1C1C]" style={{ fontFamily: 'DM Sans, sans-serif' }}>{costData.name}</p>
+        <p>Iteration: <span className="font-mono text-[#F59D8A]">{points.length - 1}</span></p>
         {points.length > 0 && (
           <div className="mt-2 space-y-1 font-mono text-[10px]">
             <p>X: {points[points.length-1].x.toFixed(3)}</p>
             <p>Y: {points[points.length-1].y.toFixed(3)}</p>
-            <p className="mt-2 text-amber-300">Cost: {points[points.length-1].z.toFixed(4)}</p>
+            <p className="mt-2 text-[#A8D5D2]">Cost: {points[points.length-1].z.toFixed(4)}</p>
           </div>
         )}
       </div>
 
       <Canvas camera={{ position: [6, 6, 8], fov: 50 }} dpr={[1, 2]}>
-        <ambientLight intensity={0.4} />
-        <directionalLight position={[5, 10, 5]} intensity={0.8} />
-        <pointLight position={[-5, 5, -5]} intensity={0.4} color={accent} />
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[5, 10, 5]} intensity={1.0} />
+        <pointLight position={[-5, 5, -5]} intensity={0.6} color="#F59D8A" />
 
         <Surface fn={costData.f} accent={accent} xRange={[-5, 5]} yRange={[-5, 5]} resolution={80} />
         <Agent points={points} setPoints={setPoints} playing={playing} alpha={alpha} costData={costData} />
 
         {/* Grid helper moved down slightly to avoid z-fighting with z=0 parts of surface */}
-        <gridHelper args={[10, 20, '#1e293b', '#0f172a']} position={[0, -0.01, 0]} />
+        <gridHelper args={[10, 20, '#1C1C1C', 'rgba(28,28,28,0.1)']} position={[0, -0.01, 0]} />
 
         <OrbitControls enableDamping dampingFactor={0.05} rotateSpeed={0.5} minDistance={2} maxDistance={20} />
       </Canvas>

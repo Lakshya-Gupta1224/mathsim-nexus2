@@ -28,11 +28,18 @@ function AttractorTrail({ sigma, rho, beta, maxSteps, currentStep, accent }) {
   // Create gradient colors
   const colors = useMemo(() => {
     const accentColor = new THREE.Color(accent);
-    const startColor = new THREE.Color('#1e3a5f');
+    const startColor = new THREE.Color('#F8F6F3');
+    const midColor = new THREE.Color('#F59D8A');
+    const endColor = new THREE.Color('#1C1C1C');
     const arr = new Float32Array(maxSteps * 3);
     for (let i = 0; i < maxSteps; i++) {
       const t = i / maxSteps;
-      const color = startColor.clone().lerp(accentColor, t);
+      let color;
+      if (t < 0.5) {
+        color = startColor.clone().lerp(midColor, t * 2);
+      } else {
+        color = midColor.clone().lerp(endColor, (t - 0.5) * 2);
+      }
       arr[i * 3] = color.r;
       arr[i * 3 + 1] = color.g;
       arr[i * 3 + 2] = color.b;
@@ -125,11 +132,11 @@ export default function Lorenz3DCanvas({ values, accent }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="w-full rounded-xl overflow-hidden" style={{ height: 'calc(100vh - 210px)', minHeight: 400, background: '#080d18' }}>
+      <div className="w-full rounded-[12px] overflow-hidden border-2 border-[#1C1C1C]" style={{ height: 'calc(100vh - 210px)', minHeight: 400, background: '#F8F6F3', boxShadow: '4px 4px 0px #1C1C1C' }}>
         <Canvas camera={{ position: [4, 2.5, 4], fov: 50 }} dpr={[1, 2]}>
           <ambientLight intensity={0.2} />
-          <pointLight position={[5, 10, 5]} intensity={0.6} color="#ffffff" />
-          <pointLight position={[-3, 5, -3]} intensity={0.3} color={accent} />
+          <pointLight position={[5, 10, 5]} intensity={0.8} color="#F59D8A" />
+          <pointLight position={[-3, 5, -3]} intensity={0.5} color="#CFA8B8" />
           
           <AttractorTrail
             sigma={sigma}
@@ -140,7 +147,7 @@ export default function Lorenz3DCanvas({ values, accent }) {
             accent={accent}
           />
           
-          <gridHelper args={[8, 16, '#1e293b', '#0f172a']} position={[0, -2, 0]} />
+          <gridHelper args={[8, 16, '#1C1C1C', 'rgba(28,28,28,0.1)']} position={[0, -2, 0]} />
           <AxisLabels />
           
           <OrbitControls enableDamping dampingFactor={0.05} rotateSpeed={0.5} minDistance={2} maxDistance={20} />
@@ -151,13 +158,15 @@ export default function Lorenz3DCanvas({ values, accent }) {
       <div className="flex items-center gap-3">
         <button
           onClick={togglePlay}
-          className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800/80 border border-white/10 text-white hover:border-white/30 text-sm transition"
+          className="w-8 h-8 flex items-center justify-center rounded-[8px] bg-white border-2 border-[#1C1C1C] text-[#1C1C1C] hover:bg-[#F4F1EA] text-sm font-bold transition hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1C1C1C]"
+          style={{ fontFamily: 'DM Sans, sans-serif', boxShadow: '2px 2px 0px #1C1C1C' }}
         >
           {playing ? '⏸' : '▶'}
         </button>
         <button
           onClick={resetAnim}
-          className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800/80 border border-white/10 text-white hover:border-white/30 text-xs transition"
+          className="w-8 h-8 flex items-center justify-center rounded-[8px] bg-white border-2 border-[#1C1C1C] text-[#1C1C1C] hover:bg-[#F4F1EA] text-xs font-bold transition hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1C1C1C]"
+          style={{ fontFamily: 'DM Sans, sans-serif', boxShadow: '2px 2px 0px #1C1C1C' }}
         >
           ⟳
         </button>
@@ -168,12 +177,13 @@ export default function Lorenz3DCanvas({ values, accent }) {
           step={1}
           value={currentStep}
           onChange={(e) => { setCurrentStep(parseInt(e.target.value)); setPlaying(false); }}
-          className="flex-1 h-1.5 rounded-full appearance-none cursor-pointer"
+          className="flex-1 h-2 rounded-full appearance-none cursor-pointer border-2 border-[#1C1C1C]"
           style={{
-            background: `linear-gradient(to right, ${accent} 0%, ${accent} ${(currentStep / maxSteps) * 100}%, rgba(255,255,255,0.1) ${(currentStep / maxSteps) * 100}%, rgba(255,255,255,0.1) 100%)`
+            background: `linear-gradient(to right, #F59D8A 0%, #F59D8A ${(currentStep / maxSteps) * 100}%, #F4F1EA ${(currentStep / maxSteps) * 100}%, #F4F1EA 100%)`,
+            boxShadow: 'inset 2px 2px 0px rgba(0,0,0,0.1)'
           }}
         />
-        <span className="text-xs font-mono text-slate-500 min-w-[80px] text-right">
+        <span className="text-xs font-mono text-[#1C1C1C] min-w-[80px] text-right" style={{ fontFamily: 'Inter, sans-serif' }}>
           {currentStep.toLocaleString()} / {maxSteps.toLocaleString()}
         </span>
       </div>

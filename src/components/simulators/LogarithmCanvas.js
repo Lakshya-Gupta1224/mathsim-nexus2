@@ -14,9 +14,9 @@ export default function LogarithmCanvas({ values, accent }) {
     const xMin = (0 - ox) / s;
     const xMax = (w - ox) / s;
     plotFunction(ctx, x => Math.log(x - shiftX) / Math.log(b) + shiftY, xMin, xMax, 400, ox, oy, s, s, accent, 2.5);
-    plotFunction(ctx, x => Math.log(x - shiftX) + shiftY, xMin, xMax, 400, ox, oy, s, s, 'rgba(255,255,255,0.2)', 1.5);
+    plotFunction(ctx, x => Math.log(x - shiftX) + shiftY, xMin, xMax, 400, ox, oy, s, s, 'rgba(28,28,28,0.3)', 1.5);
     labelAt(ctx, `y = log₍${b.toFixed(2)}₎(x - ${shiftX.toFixed(1)}) + ${shiftY.toFixed(1)}`, 10, 20, accent, 13);
-    labelAt(ctx, 'gray: ln(x)', 10, 38, 'rgba(255,255,255,0.3)', 11);
+    labelAt(ctx, 'dark: ln(x)', 10, 38, 'rgba(28,28,28,0.6)', 11);
   }, [b, shiftX, shiftY, accent]);
 
   return (

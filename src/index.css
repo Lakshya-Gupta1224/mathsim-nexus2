@@ -1,16 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Inter:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
   margin: 0;
-  font-family: 'JetBrains Mono', 'Fira Code', monospace;
-  background: #0f172a;
-  color: white;
+  font-family: 'Inter', sans-serif;
+  background: #F4F1EA;
+  color: #1C1C1C;
 }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #0f172a; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #F4F1EA; }
+::-webkit-scrollbar-thumb { background: #1C1C1C; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #1C1C1C; }
+
+/* Neo-Brutalism Base Styles */
+.neo-brutalism-card {
+  border: 2px solid #1C1C1C;
+  border-radius: 12px;
+  box-shadow: 4px 4px 0px #1C1C1C;
+  transition: all 0.2s ease;
+}
+
+.neo-brutalism-card:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #1C1C1C;
+}
+
+.neo-brutalism-pill {
+  border: 2px solid #1C1C1C;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+}
+
+.neo-brutalism-pill:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #1C1C1C;
+}
+
+/* Color Palette Variables */
+:root {
+  --bg-cream: #F4F1EA;
+  --ink-charcoal: #1C1C1C;
+  --mint-teal: #A8D5D2;
+  --dusty-rose: #CFA8B8;
+  --warm-peach: #F59D8A;
+  --pure-white: #FFFFFF;
+  --green-status: #4CAF50;
+}
+
+/* Typography Scale */
+.text-stat-number {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--ink-charcoal);
+}
+
+.text-card-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink-charcoal);
+}
+
+.text-card-description {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--ink-charcoal);
+}
+
+.text-header-logo {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+}
+
+.text-body {
+  font-family: 'Inter', sans-serif;
+}

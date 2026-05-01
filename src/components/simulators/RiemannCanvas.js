@@ -38,8 +38,8 @@ export default function RiemannCanvas({ values, accent }) {
 
     const error = Math.abs(exact - sum);
     labelAt(ctx, `n = ${n} rectangles`, 10, 20, accent, 13);
-    labelAt(ctx, `Riemann Sum ≈ ${sum.toFixed(5)}`, 10, 38, 'rgba(255,255,255,0.6)', 12);
-    labelAt(ctx, `Exact = 2.00000  Error = ${error.toFixed(5)}`, 10, 56, 'rgba(255,255,255,0.4)', 11);
+    labelAt(ctx, `Riemann Sum ≈ ${sum.toFixed(5)}`, 10, 38, 'rgba(28,28,28,0.7)', 12);
+    labelAt(ctx, `Exact = 2.00000  Error = ${error.toFixed(5)}`, 10, 56, 'rgba(28,28,28,0.6)', 11);
   }, [n, accent]);
 
   return (

@@ -99,27 +99,34 @@ export default function SimulatorView({ user, simulator, onBack }) {
   const is3D = simulator.is3D;
 
   return (
-    <div className="min-h-screen bg-slate-950 relative flex flex-col">
+    <div className="min-h-screen relative flex flex-col" style={{ backgroundColor: '#F4F1EA' }}>
       <div className="fixed inset-0 opacity-5 pointer-events-none"
-        style={{ backgroundImage: 'linear-gradient(#1e293b 1px,transparent 1px),linear-gradient(90deg,#1e293b 1px,transparent 1px)', backgroundSize: '40px 40px' }} />
+        style={{ backgroundImage: 'linear-gradient(#1C1C1C 1px,transparent 1px),linear-gradient(90deg,#1C1C1C 1px,transparent 1px)', backgroundSize: '40px 40px' }} />
 
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-slate-950/80 border-b border-white/10 px-6 py-4">
-        <div className="w-full flex items-center justify-between">
+      <header className="sticky top-0 z-50 px-6 py-3">
+        <div 
+          className="w-full flex items-center justify-between border-2 border-[#1C1C1C] rounded-[12px] bg-white px-4 py-3"
+          style={{ boxShadow: '4px 4px 0px #1C1C1C' }}
+        >
           <div className="flex items-center gap-4">
-            <button onClick={onBack} className="text-slate-400 hover:text-white text-sm border border-white/10 hover:border-white/30 rounded-lg px-3 py-1.5 transition flex items-center gap-2">
+            <button 
+              onClick={onBack} 
+              className="text-[14px] text-[#1C1C1C] border-2 border-[#1C1C1C] hover:bg-[#1C1C1C] hover:text-[#F4F1EA] rounded-[8px] px-3 py-1.5 transition flex items-center gap-2 font-medium hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1C1C1C]"
+              style={{ fontFamily: 'DM Sans, sans-serif' }}
+            >
               ← Back
             </button>
             <div className="flex items-center gap-3 flex-1">
-              <span className="text-xl">{simulator.icon}</span>
+              <span className="text-[24px]">{simulator.icon}</span>
               <div>
-                <h1 className="text-white font-semibold text-sm">{simulator.title}</h1>
-                <p className="text-slate-500 text-xs">{simulator.category}</p>
+                <h1 className="font-bold text-[16px] text-[#1C1C1C]" style={{ fontFamily: 'DM Sans, sans-serif' }}>{simulator.title}</h1>
+                <p className="text-[12px] text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>{simulator.category}</p>
               </div>
             </div>
           </div>
-          <div className="hidden sm:flex items-center gap-6 text-xs text-slate-400">
-            <span>Interactions: <span className="text-cyan-400 font-semibold">{interactionCount}</span></span>
-            <span>Mastery: <span style={{ color: simulator.accent }} className="font-semibold">{Math.min(mastery, 100)}</span></span>
+          <div className="hidden sm:flex items-center gap-6 text-xs text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>
+            <span>Interactions: <span className="font-bold text-[#A8D5D2]">{interactionCount}</span></span>
+            <span>Mastery: <span className="font-bold" style={{ color: '#A8D5D2' }}>{Math.min(mastery, 100)}</span></span>
           </div>
         </div>
       </header>
@@ -130,51 +137,59 @@ export default function SimulatorView({ user, simulator, onBack }) {
           {/* Left Panel: 4/5 width */}
           <div className="lg:col-span-4 flex flex-col gap-6">
             {/* Canvas Panel */}
-            <div className="full-height-canvas backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col">
+            <div className="full-height-canvas bg-white border-2 border-[#1C1C1C] rounded-[12px] p-4 flex flex-col" style={{ boxShadow: '4px 4px 0px #1C1C1C' }}>
               <SimulatorCanvas simulator={simulator} values={values} />
             </div>
             
             {/* Marble overlay — rendered below the canvas when in marble mode */}
             {mode === 'marble' && curveFn && (
-              <div className="full-height-canvas backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col">
+              <div className="full-height-canvas bg-white border-2 border-[#1C1C1C] rounded-[12px] p-4 flex flex-col" style={{ boxShadow: '4px 4px 0px #1C1C1C' }}>
                 <MarbleOverlay curveFn={curveFn} accent={simulator.accent} />
               </div>
             )}
 
             {/* Boat overlay */}
             {mode === 'boat' && (
-              <div className="full-height-canvas backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col">
+              <div className="full-height-canvas bg-white border-2 border-[#1C1C1C] rounded-[12px] p-4 flex flex-col" style={{ boxShadow: '4px 4px 0px #1C1C1C' }}>
                 <VectorFieldBoat values={values} simulatorId={simulator.id} accent={simulator.accent} />
               </div>
             )}
           </div>
 
           {/* Right Control Panel: 1/5 width, sticky */}
-          <div className="lg:col-span-1 backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col gap-5 sticky top-[88px] self-start h-[calc(100vh-120px)] overflow-y-auto">
+          <div className="lg:col-span-1 bg-white border-2 border-[#1C1C1C] rounded-[12px] p-6 flex flex-col gap-5 sticky top-[88px] self-start h-[calc(100vh-120px)] overflow-y-auto" style={{ boxShadow: '4px 4px 0px #1C1C1C' }}>
             
             {/* Mode toggle */}
-            <div className="flex gap-1 border-b border-white/10 pb-4 flex-wrap">
+            <div className="flex gap-1 border-b-2 border-[#1C1C1C] pb-4 flex-wrap">
               <button 
                 onClick={() => { setMode('params'); setIsQuizMode(false); }} 
-                className={`flex-1 py-1.5 text-xs font-semibold uppercase tracking-wider rounded transition ${mode === 'params' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-white'}`}>
+                className={`flex-1 py-2 text-xs font-bold rounded-[8px] transition ${mode === 'params' ? 'bg-[#A8D5D2] text-[#1C1C1C] border-2 border-[#1C1C1C]' : 'bg-white text-[#1C1C1C] border-2 border-[#1C1C1C] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1C1C1C]'}`}
+                style={{ fontFamily: 'DM Sans, sans-serif' }}
+              >
                 Parameters
               </button>
               <button 
                 onClick={() => { setMode('quiz'); setIsQuizMode(true); }} 
-                className={`flex-1 py-1.5 text-xs font-semibold uppercase tracking-wider rounded transition ${mode === 'quiz' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-white'}`}>
+                className={`flex-1 py-2 text-xs font-bold rounded-[8px] transition ${mode === 'quiz' ? 'bg-[#A8D5D2] text-[#1C1C1C] border-2 border-[#1C1C1C]' : 'bg-white text-[#1C1C1C] border-2 border-[#1C1C1C] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1C1C1C]'}`}
+                style={{ fontFamily: 'DM Sans, sans-serif' }}
+              >
                 Quiz
               </button>
               {hasMarble && (
                 <button 
                   onClick={() => { setMode('marble'); setIsQuizMode(false); }} 
-                  className={`flex-1 py-1.5 text-xs font-semibold uppercase tracking-wider rounded transition ${mode === 'marble' ? 'bg-amber-500/20 text-amber-200 border border-amber-500/30' : 'text-slate-500 hover:text-white'}`}>
+                  className={`flex-1 py-2 text-xs font-bold rounded-[8px] transition ${mode === 'marble' ? 'bg-[#F59D8A] text-[#1C1C1C] border-2 border-[#1C1C1C]' : 'bg-white text-[#1C1C1C] border-2 border-[#1C1C1C] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1C1C1C]'}`}
+                  style={{ fontFamily: 'DM Sans, sans-serif' }}
+                >
                   🎱 Marble
                 </button>
               )}
               {hasBoat && (
                 <button 
                   onClick={() => { setMode('boat'); setIsQuizMode(false); }} 
-                  className={`flex-1 py-1.5 text-xs font-semibold uppercase tracking-wider rounded transition ${mode === 'boat' ? 'bg-blue-500/20 text-blue-200 border border-blue-500/30' : 'text-slate-500 hover:text-white'}`}>
+                  className={`flex-1 py-2 text-xs font-bold rounded-[8px] transition ${mode === 'boat' ? 'bg-[#CFA8B8] text-[#1C1C1C] border-2 border-[#1C1C1C]' : 'bg-white text-[#1C1C1C] border-2 border-[#1C1C1C] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1C1C1C]'}`}
+                  style={{ fontFamily: 'DM Sans, sans-serif' }}
+                >
                   🚤 Navigate
                 </button>
               )}
@@ -184,8 +199,8 @@ export default function SimulatorView({ user, simulator, onBack }) {
             {mode === 'params' && (
               <>
                 <div>
-                  <h2 className="text-white font-semibold text-sm mb-1">Adjust Values</h2>
-                  <p className="text-slate-500 text-xs">{simulator.description}</p>
+                  <h2 className="font-bold text-[16px] text-[#1C1C1C] mb-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>Adjust Values</h2>
+                  <p className="text-[12px] text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>{simulator.description}</p>
                 </div>
                 <div className="space-y-5">
                   {simulator.sliders.map(slider => {
@@ -194,8 +209,8 @@ export default function SimulatorView({ user, simulator, onBack }) {
                     return (
                     <div key={slider.key}>
                       <div className="flex items-center justify-between mb-2">
-                        <label className="text-xs text-slate-300">{slider.label}</label>
-                        <span className="text-xs font-mono font-bold" style={{ color: simulator.accent }}>
+                        <label className="text-xs text-[#1C1C1C] font-medium" style={{ fontFamily: 'DM Sans, sans-serif' }}>{slider.label}</label>
+                        <span className="text-xs font-bold" style={{ color: '#1C1C1C', fontFamily: 'DM Sans, sans-serif' }}>
                           {typeof values[slider.key] === 'number'
                             ? values[slider.key] % 1 === 0 ? values[slider.key] : values[slider.key].toFixed(2)
                             : values[slider.key]}
@@ -204,31 +219,47 @@ export default function SimulatorView({ user, simulator, onBack }) {
                       <input
                         type="range" min={sMin} max={sMax} step={slider.step}
                         value={values[slider.key]} onChange={e => handleSliderChange(slider.key, e.target.value)}
-                        className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
+                        className="w-full h-2 rounded-full appearance-none cursor-pointer border-2 border-[#1C1C1C]"
                         style={{
-                          background: `linear-gradient(to right, ${simulator.accent} 0%, ${simulator.accent} ${((values[slider.key] - sMin) / (sMax - sMin)) * 100}%, rgba(255,255,255,0.1) ${((values[slider.key] - sMin) / (sMax - sMin)) * 100}%, rgba(255,255,255,0.1) 100%)`
+                          background: `linear-gradient(to right, #1C1C1C 0%, #1C1C1C ${((values[slider.key] - sMin) / (sMax - sMin)) * 100}%, #F4F1EA ${((values[slider.key] - sMin) / (sMax - sMin)) * 100}%, #F4F1EA 100%)`,
+                          boxShadow: 'inset 2px 2px 0px rgba(0,0,0,0.1)'
                         }}
                       />
-                      <div className="flex justify-between text-slate-600 text-xs mt-1">
-                        <input 
-                          type="number"
-                          value={sMin}
-                          onChange={(e) => setBounds(prev => ({ ...prev, [slider.key]: { ...prev[slider.key], min: parseFloat(e.target.value) || 0 } }))}
-                          className="bg-transparent border-b border-transparent hover:border-slate-700 focus:border-cyan-500 outline-none w-16 text-left appearance-none"
-                        />
-                        <input 
-                          type="number"
-                          value={sMax}
-                          onChange={(e) => setBounds(prev => ({ ...prev, [slider.key]: { ...prev[slider.key], max: parseFloat(e.target.value) || 0 } }))}
-                          className="bg-transparent border-b border-transparent hover:border-slate-700 focus:border-cyan-500 outline-none w-16 text-right appearance-none"
-                        />
+                      <div className="flex justify-between items-center mt-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-[#1C1C1C] font-medium" style={{ fontFamily: 'DM Sans, sans-serif' }}>Bounds:</span>
+                          <div className="flex items-center gap-1">
+                            <label className="text-xs text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>Min</label>
+                            <input 
+                              type="number"
+                              value={sMin}
+                              onChange={(e) => setBounds(prev => ({ ...prev, [slider.key]: { ...prev[slider.key], min: parseFloat(e.target.value) || 0 } }))}
+                              className="bg-white border-2 border-[#1C1C1C] rounded-[6px] px-2 py-1 w-16 text-center text-[#1C1C1C] focus:border-[#A8D5D2] focus:outline-none transition"
+                              style={{ fontFamily: 'Inter, sans-serif', boxShadow: '2px 2px 0px #1C1C1C' }}
+                              placeholder="-10"
+                            />
+                          </div>
+                          <span className="text-xs text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>to</span>
+                          <div className="flex items-center gap-1">
+                            <label className="text-xs text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>Max</label>
+                            <input 
+                              type="number"
+                              value={sMax}
+                              onChange={(e) => setBounds(prev => ({ ...prev, [slider.key]: { ...prev[slider.key], max: parseFloat(e.target.value) || 0 } }))}
+                              className="bg-white border-2 border-[#1C1C1C] rounded-[6px] px-2 py-1 w-16 text-center text-[#1C1C1C] focus:border-[#A8D5D2] focus:outline-none transition"
+                              style={{ fontFamily: 'Inter, sans-serif', boxShadow: '2px 2px 0px #1C1C1C' }}
+                              placeholder="10"
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )})}
                 </div>
                 <button
                   onClick={() => { const reset = {}; simulator.sliders.forEach(s => { reset[s.key] = s.default; }); setValues(reset); }}
-                  className="mt-auto text-xs text-slate-500 hover:text-white border border-white/10 hover:border-white/30 rounded-lg py-2 transition"
+                  className="mt-auto text-xs text-[#1C1C1C] border-2 border-[#1C1C1C] hover:bg-[#1C1C1C] hover:text-[#F4F1EA] rounded-[8px] py-2 transition font-medium hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1C1C1C]"
+                  style={{ fontFamily: 'DM Sans, sans-serif' }}
                 >
                   Reset to defaults
                 </button>
@@ -238,43 +269,55 @@ export default function SimulatorView({ user, simulator, onBack }) {
             {mode === 'quiz' && (
               <div className="flex flex-col flex-1">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-white font-semibold text-sm">Knowledge Check</h2>
+                  <h2 className="font-bold text-[16px] text-[#1C1C1C]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Knowledge Check</h2>
                   <button 
                     onClick={handleGenerateQuiz} 
                     disabled={isGeneratingQuiz}
-                    className="text-xs bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 px-3 py-1.5 rounded transition flex items-center gap-1 disabled:opacity-50">
+                    className="text-xs bg-[#A8D5D2] text-[#1C1C1C] hover:bg-[#CFA8B8] px-3 py-1.5 rounded-[8px] transition flex items-center gap-1 disabled:opacity-50 border-2 border-[#1C1C1C] font-medium hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1C1C1C]"
+                    style={{ fontFamily: 'DM Sans, sans-serif' }}
+                  >
                     {isGeneratingQuiz ? 'Generating...' : '✨ AI Quiz'}
                   </button>
                 </div>
                 
                 {quizError && (
-                  <div className="p-3 mb-4 rounded bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
+                  <div className="p-3 mb-4 rounded-[8px] bg-white border-2 border-[#1C1C1C] text-[#1C1C1C] text-xs" style={{ fontFamily: 'Inter, sans-serif' }}>
                     {quizError}
                   </div>
                 )}
 
                 {activeQuiz && activeQuiz.examQuestion && activeQuiz.examQuestion !== 'N/A' ? (
                   <>
-                    <h2 className="text-white font-semibold text-sm mb-4 leading-relaxed">{activeQuiz.examQuestion}</h2>
+                    <h2 className="font-bold text-[14px] text-[#1C1C1C] mb-4 leading-relaxed" style={{ fontFamily: 'DM Sans, sans-serif' }}>{activeQuiz.examQuestion}</h2>
                     <div className="space-y-3">
                       {activeQuiz.options.map((opt, i) => {
-                        let btnClass = "w-full text-left p-3 rounded-lg border text-sm transition font-mono ";
-                        if (!quizState.answered) btnClass += "border-white/10 hover:border-cyan-500/50 hover:bg-white/5 text-slate-300";
-                        else if (opt === activeQuiz.answer) btnClass += "border-green-500 bg-green-500/20 text-white";
-                        else if (opt === quizState.selected) btnClass += "border-red-500 bg-red-500/20 text-white";
-                        else btnClass += "border-white/5 text-slate-600 opacity-50";
+                        let btnClass = "w-full text-left p-3 rounded-[8px] border-2 text-sm transition font-mono ";
+                        if (!quizState.answered) btnClass += "border-[#1C1C1C] bg-white text-[#1C1C1C] hover:bg-[#F4F1EA] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1C1C1C]";
+                        else if (opt === activeQuiz.answer) btnClass += "border-[#4CAF50] bg-[#4CAF50] text-white";
+                        else if (opt === quizState.selected) btnClass += "border-[#F59D8A] bg-[#F59D8A] text-white";
+                        else btnClass += "border-[#1C1C1C] bg-white text-[#1C1C1C]/50";
 
                         return (
-                          <button key={i} onClick={() => handleAnswer(opt)} className={btnClass} disabled={quizState.answered}>
+                          <button 
+                            key={i} 
+                            onClick={() => handleAnswer(opt)} 
+                            className={btnClass} 
+                            disabled={quizState.answered}
+                            style={{ fontFamily: 'Inter, sans-serif' }}
+                          >
                             {opt}
                           </button>
                         );
                       })}
                     </div>
                     {quizState.answered && (
-                      <div className="mt-6 p-4 rounded-lg bg-white/5 border border-white/10">
-                        <p className="text-xs text-slate-300 mb-3"><span className="text-cyan-400 font-bold">Theory:</span> {activeQuiz.theory}</p>
-                        <button onClick={() => setQuizState({answered: false, correct: false, selected: null})} className="w-full text-xs text-slate-500 hover:text-white border border-white/10 rounded py-2 transition">
+                      <div className="mt-6 p-4 rounded-[8px] bg-white border-2 border-[#1C1C1C]">
+                        <p className="text-xs text-[#1C1C1C] mb-3" style={{ fontFamily: 'Inter, sans-serif' }}><span className="font-bold text-[#A8D5D2]">Theory:</span> {activeQuiz.theory}</p>
+                        <button 
+                          onClick={() => setQuizState({answered: false, correct: false, selected: null})} 
+                          className="w-full text-xs text-[#1C1C1C] border-2 border-[#1C1C1C] hover:bg-[#1C1C1C] hover:text-[#F4F1EA] rounded-[8px] py-2 transition font-medium hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1C1C1C]"
+                          style={{ fontFamily: 'DM Sans, sans-serif' }}
+                        >
                           Retry Question
                         </button>
                       </div>
@@ -291,14 +334,14 @@ export default function SimulatorView({ user, simulator, onBack }) {
             {mode === 'marble' && (
               <div className="flex flex-col gap-4">
                 <div>
-                  <h2 className="text-white font-semibold text-sm mb-1">🎱 Marble Run</h2>
-                  <p className="text-slate-500 text-xs leading-relaxed">
+                  <h2 className="font-bold text-[14px] text-[#1C1C1C] mb-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>🎱 Marble Run</h2>
+                  <p className="text-[12px] text-[#1C1C1C] leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>
                     Adjust the curve with sliders above, then drop a marble! 
                     Tweak the equation so the marble rolls into the golden target bucket.
                   </p>
                 </div>
-                <div className="p-3 rounded-lg bg-amber-500/5 border border-amber-500/20">
-                  <p className="text-xs text-amber-200/80">
+                <div className="p-3 rounded-[8px] bg-[#F59D8A] border-2 border-[#1C1C1C]" style={{ boxShadow: '2px 2px 0px #1C1C1C' }}>
+                  <p className="text-xs text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>
                     <span className="font-bold">How to play:</span> Use the Parameters tab to shape the curve, 
                     then come back here. Position your drop point, and hit Drop!
                   </p>
@@ -311,8 +354,8 @@ export default function SimulatorView({ user, simulator, onBack }) {
                     return (
                     <div key={slider.key}>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="text-xs text-slate-400">{slider.label}</label>
-                        <span className="text-xs font-mono" style={{ color: simulator.accent }}>
+                        <label className="text-xs text-[#1C1C1C] font-medium" style={{ fontFamily: 'DM Sans, sans-serif' }}>{slider.label}</label>
+                        <span className="text-xs font-mono text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>
                           {typeof values[slider.key] === 'number'
                             ? values[slider.key] % 1 === 0 ? values[slider.key] : values[slider.key].toFixed(2)
                             : values[slider.key]}
@@ -321,11 +364,40 @@ export default function SimulatorView({ user, simulator, onBack }) {
                       <input
                         type="range" min={sMin} max={sMax} step={slider.step}
                         value={values[slider.key]} onChange={e => handleSliderChange(slider.key, e.target.value)}
-                        className="w-full h-1 rounded-full appearance-none cursor-pointer"
+                        className="w-full h-2 rounded-full appearance-none cursor-pointer border-2 border-[#1C1C1C]"
                         style={{
-                          background: `linear-gradient(to right, ${simulator.accent}80 0%, ${simulator.accent}80 ${((values[slider.key] - sMin) / (sMax - sMin)) * 100}%, rgba(255,255,255,0.08) ${((values[slider.key] - sMin) / (sMax - sMin)) * 100}%, rgba(255,255,255,0.08) 100%)`
+                          background: `linear-gradient(to right, #F59D8A 0%, #F59D8A ${((values[slider.key] - sMin) / (sMax - sMin)) * 100}%, #F4F1EA ${((values[slider.key] - sMin) / (sMax - sMin)) * 100}%, #F4F1EA 100%)`,
+                          boxShadow: 'inset 2px 2px 0px rgba(0,0,0,0.1)'
                         }}
                       />
+                      <div className="flex justify-between items-center mt-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-[#1C1C1C] font-medium" style={{ fontFamily: 'DM Sans, sans-serif' }}>Bounds:</span>
+                          <div className="flex items-center gap-1">
+                            <label className="text-xs text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>Min</label>
+                            <input 
+                              type="number"
+                              value={sMin}
+                              onChange={(e) => setBounds(prev => ({ ...prev, [slider.key]: { ...prev[slider.key], min: parseFloat(e.target.value) || 0 } }))}
+                              className="bg-white border-2 border-[#1C1C1C] rounded-[6px] px-2 py-1 w-16 text-center text-[#1C1C1C] focus:border-[#F59D8A] focus:outline-none transition"
+                              style={{ fontFamily: 'Inter, sans-serif', boxShadow: '2px 2px 0px #1C1C1C' }}
+                              placeholder="-10"
+                            />
+                          </div>
+                          <span className="text-xs text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>to</span>
+                          <div className="flex items-center gap-1">
+                            <label className="text-xs text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>Max</label>
+                            <input 
+                              type="number"
+                              value={sMax}
+                              onChange={(e) => setBounds(prev => ({ ...prev, [slider.key]: { ...prev[slider.key], max: parseFloat(e.target.value) || 0 } }))}
+                              className="bg-white border-2 border-[#1C1C1C] rounded-[6px] px-2 py-1 w-16 text-center text-[#1C1C1C] focus:border-[#F59D8A] focus:outline-none transition"
+                              style={{ fontFamily: 'Inter, sans-serif', boxShadow: '2px 2px 0px #1C1C1C' }}
+                              placeholder="10"
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   )})}
                 </div>
@@ -335,14 +407,14 @@ export default function SimulatorView({ user, simulator, onBack }) {
             {mode === 'boat' && (
               <div className="flex flex-col gap-4">
                 <div>
-                  <h2 className="text-white font-semibold text-sm mb-1">🚤 Vector Navigation</h2>
-                  <p className="text-slate-500 text-xs leading-relaxed">
+                  <h2 className="font-bold text-[14px] text-[#1C1C1C] mb-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>🚤 Vector Navigation</h2>
+                  <p className="text-[12px] text-[#1C1C1C] leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>
                     Use WASD or arrow keys to navigate the boat through the vector field. 
                     Tweak the field equations to steer through obstacles to the goal!
                   </p>
                 </div>
-                <div className="p-3 rounded-lg bg-blue-500/5 border border-blue-500/20">
-                  <p className="text-xs text-blue-200/80">
+                <div className="p-3 rounded-[8px] bg-[#CFA8B8] border-2 border-[#1C1C1C]" style={{ boxShadow: '2px 2px 0px #1C1C1C' }}>
+                  <p className="text-xs text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>
                     <span className="font-bold">Controls:</span> W/↑ forward, S/↓ backward, A/← left, D/→ right
                   </p>
                 </div>
@@ -354,8 +426,8 @@ export default function SimulatorView({ user, simulator, onBack }) {
                     return (
                     <div key={slider.key}>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="text-xs text-slate-400">{slider.label}</label>
-                        <span className="text-xs font-mono" style={{ color: simulator.accent }}>
+                        <label className="text-xs text-[#1C1C1C] font-medium" style={{ fontFamily: 'DM Sans, sans-serif' }}>{slider.label}</label>
+                        <span className="text-xs font-mono text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>
                           {typeof values[slider.key] === 'number'
                             ? values[slider.key] % 1 === 0 ? values[slider.key] : values[slider.key].toFixed(2)
                             : values[slider.key]}
@@ -364,11 +436,40 @@ export default function SimulatorView({ user, simulator, onBack }) {
                       <input
                         type="range" min={sMin} max={sMax} step={slider.step}
                         value={values[slider.key]} onChange={e => handleSliderChange(slider.key, e.target.value)}
-                        className="w-full h-1 rounded-full appearance-none cursor-pointer"
+                        className="w-full h-2 rounded-full appearance-none cursor-pointer border-2 border-[#1C1C1C]"
                         style={{
-                          background: `linear-gradient(to right, ${simulator.accent}80 0%, ${simulator.accent}80 ${((values[slider.key] - sMin) / (sMax - sMin)) * 100}%, rgba(255,255,255,0.08) ${((values[slider.key] - sMin) / (sMax - sMin)) * 100}%, rgba(255,255,255,0.08) 100%)`
+                          background: `linear-gradient(to right, #CFA8B8 0%, #CFA8B8 ${((values[slider.key] - sMin) / (sMax - sMin)) * 100}%, #F4F1EA ${((values[slider.key] - sMin) / (sMax - sMin)) * 100}%, #F4F1EA 100%)`,
+                          boxShadow: 'inset 2px 2px 0px rgba(0,0,0,0.1)'
                         }}
                       />
+                      <div className="flex justify-between items-center mt-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-[#1C1C1C] font-medium" style={{ fontFamily: 'DM Sans, sans-serif' }}>Bounds:</span>
+                          <div className="flex items-center gap-1">
+                            <label className="text-xs text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>Min</label>
+                            <input 
+                              type="number"
+                              value={sMin}
+                              onChange={(e) => setBounds(prev => ({ ...prev, [slider.key]: { ...prev[slider.key], min: parseFloat(e.target.value) || 0 } }))}
+                              className="bg-white border-2 border-[#1C1C1C] rounded-[6px] px-2 py-1 w-16 text-center text-[#1C1C1C] focus:border-[#CFA8B8] focus:outline-none transition"
+                              style={{ fontFamily: 'Inter, sans-serif', boxShadow: '2px 2px 0px #1C1C1C' }}
+                              placeholder="-10"
+                            />
+                          </div>
+                          <span className="text-xs text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>to</span>
+                          <div className="flex items-center gap-1">
+                            <label className="text-xs text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>Max</label>
+                            <input 
+                              type="number"
+                              value={sMax}
+                              onChange={(e) => setBounds(prev => ({ ...prev, [slider.key]: { ...prev[slider.key], max: parseFloat(e.target.value) || 0 } }))}
+                              className="bg-white border-2 border-[#1C1C1C] rounded-[6px] px-2 py-1 w-16 text-center text-[#1C1C1C] focus:border-[#CFA8B8] focus:outline-none transition"
+                              style={{ fontFamily: 'Inter, sans-serif', boxShadow: '2px 2px 0px #1C1C1C' }}
+                              placeholder="10"
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   )})}
                 </div>

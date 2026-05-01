@@ -108,48 +108,16 @@ export default function MarbleOverlay({ curveFn, accent }) {
       ctx.fillStyle = grd;
       ctx.fill();
 
-      // Bucket walls — thick strokes for the sides and bottom (no top line — open)
-      ctx.strokeStyle = 'rgba(255, 180, 0, 0.7)';
-      ctx.lineWidth = 2.5;
-      ctx.lineCap = 'round';
-      // Left wall
-      ctx.beginPath();
-      ctx.moveTo(bx - topW, by);
-      ctx.lineTo(bx - botW, by + bh);
-      ctx.stroke();
-      // Bottom
-      ctx.beginPath();
-      ctx.moveTo(bx - botW, by + bh);
-      ctx.lineTo(bx + botW, by + bh);
-      ctx.stroke();
-      // Right wall
-      ctx.beginPath();
-      ctx.moveTo(bx + botW, by + bh);
-      ctx.lineTo(bx + topW, by);
-      ctx.stroke();
-
-      // Small rim on top edges
-      ctx.strokeStyle = 'rgba(255, 200, 50, 0.9)';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(bx - topW - 4, by);
-      ctx.lineTo(bx - topW + 4, by);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(bx + topW - 4, by);
-      ctx.lineTo(bx + topW + 4, by);
-      ctx.stroke();
-
-      // Glow underneath
-      const glowGrd = ctx.createRadialGradient(bx, by + bh * 0.5, 0, bx, by + bh * 0.5, bw);
-      glowGrd.addColorStop(0, 'rgba(255, 180, 0, 0.06)');
-      glowGrd.addColorStop(1, 'transparent');
-      ctx.fillStyle = glowGrd;
-      ctx.fillRect(bx - bw, by - bh * 0.3, bw * 2, bh * 2);
-
+      // Bucket body - filled rectangle
+      ctx.fillStyle = '#F59D8A';
+      ctx.fillRect(bx - bw/2, by - bh/2, bw, bh);
+      ctx.strokeStyle = '#1C1C1C';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(bx - bw/2, by - bh/2, bw, bh);
+      
       // Label
-      ctx.fillStyle = 'rgba(255, 200, 50, 0.7)';
-      ctx.font = 'bold 10px monospace';
+      ctx.fillStyle = '#1C1C1C';
+      ctx.font = 'bold 10px DM Sans';
       ctx.textAlign = 'center';
       ctx.fillText('🎯 BUCKET', bx, by - 8);
     };
@@ -159,11 +127,11 @@ export default function MarbleOverlay({ curveFn, accent }) {
       ctx.clearRect(0, 0, W, H);
 
       // Background
-      ctx.fillStyle = '#0c1322';
+      ctx.fillStyle = '#F8F6F3';
       ctx.fillRect(0, 0, W, H);
 
       // Grid
-      ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+      ctx.strokeStyle = 'rgba(28, 28, 28, 0.1)';
       ctx.lineWidth = 1;
       for (let gx = Math.ceil(xMin); gx <= xMax; gx++) {
         const px = toSX(gx);
@@ -176,7 +144,7 @@ export default function MarbleOverlay({ curveFn, accent }) {
 
       // Axes
       const axX = toSY(0), axY = toSX(0);
-      ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+      ctx.strokeStyle = 'rgba(28, 28, 28, 0.3)';
       ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(0, axX); ctx.lineTo(W, axX); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(axY, 0); ctx.lineTo(axY, H); ctx.stroke();
@@ -261,7 +229,7 @@ export default function MarbleOverlay({ curveFn, accent }) {
         ctx.arc(mx, my, 7, 0, Math.PI * 2);
         ctx.fillStyle = accent;
         ctx.fill();
-        ctx.strokeStyle = '#fff';
+        ctx.strokeStyle = '#1C1C1C';
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
@@ -286,8 +254,8 @@ export default function MarbleOverlay({ curveFn, accent }) {
 
         // HUD
         const spd = Math.sqrt(sim.vx ** 2 + sim.vy ** 2);
-        ctx.fillStyle = 'rgba(255,255,255,0.35)';
-        ctx.font = '9px monospace';
+        ctx.fillStyle = 'rgba(28, 28, 28, 0.6)';
+        ctx.font = '9px Inter';
         ctx.textAlign = 'left';
         ctx.fillText(`speed: ${spd.toFixed(0)}  bounces: ${sim.bounceCount}`, 6, H - 6);
       }
@@ -295,15 +263,15 @@ export default function MarbleOverlay({ curveFn, accent }) {
       // Score overlay when game ended
       if (score && !running) {
         const isPerfect = score.includes('PERFECT');
-        ctx.fillStyle = isPerfect ? 'rgba(0, 50, 0, 0.75)' : 'rgba(0, 0, 0, 0.65)';
+        ctx.fillStyle = isPerfect ? 'rgba(76, 175, 80, 0.75)' : 'rgba(245, 157, 138, 0.65)';
         ctx.fillRect(0, 0, W, H);
-        ctx.fillStyle = isPerfect ? '#fbbf24' : 'rgba(255,255,255,0.9)';
-        ctx.font = `bold ${isPerfect ? 24 : 16}px monospace`;
+        ctx.fillStyle = isPerfect ? '#1C1C1C' : '#1C1C1C';
+        ctx.font = `bold ${isPerfect ? 24 : 16}px DM Sans`;
         ctx.textAlign = 'center';
         ctx.fillText(score, W / 2, H / 2 - 10);
         
-        ctx.fillStyle = 'rgba(255,255,255,0.6)';
-        ctx.font = '11px monospace';
+        ctx.fillStyle = 'rgba(28, 28, 28, 0.8)';
+        ctx.font = '11px Inter';
         ctx.fillText(isPerfect ? "Great job! Click '🔄' to play a new level." : "Adjust the curve or drop position and try again.", W / 2, H / 2 + 20);
       }
 
@@ -322,13 +290,13 @@ export default function MarbleOverlay({ curveFn, accent }) {
     <div className="flex flex-col gap-3">
       <canvas
         ref={canvasRef}
-        className="w-full rounded-xl block"
-        style={{ height: 320, background: '#0c1322' }}
+        className="w-full rounded-[12px] block border-2 border-[#1C1C1C]"
+        style={{ height: 320, background: '#F8F6F3', boxShadow: '4px 4px 0px #1C1C1C' }}
       />
 
       <div className="flex items-center gap-3">
         <div className="flex-1">
-          <label className="text-xs text-slate-400 mb-1 block">Drop Position X</label>
+          <label className="text-xs text-[#1C1C1C] mb-1 block font-medium" style={{ fontFamily: 'DM Sans, sans-serif' }}>Drop Position X</label>
           <input
             type="range"
             min={xMin + 1}
@@ -337,24 +305,26 @@ export default function MarbleOverlay({ curveFn, accent }) {
             value={dropX}
             onChange={(e) => setDropX(parseFloat(e.target.value))}
             disabled={running}
-            className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
+            className="w-full h-2 rounded-full appearance-none cursor-pointer border-2 border-[#1C1C1C]"
             style={{
-              background: `linear-gradient(to right, ${accent} 0%, ${accent} ${((dropX - xMin - 1) / (xMax - xMin - 2)) * 100}%, rgba(255,255,255,0.1) ${((dropX - xMin - 1) / (xMax - xMin - 2)) * 100}%, rgba(255,255,255,0.1) 100%)`
+              background: `linear-gradient(to right, #F59D8A 0%, #F59D8A ${((dropX - xMin - 1) / (xMax - xMin - 2)) * 100}%, #F4F1EA ${((dropX - xMin - 1) / (xMax - xMin - 2)) * 100}%, #F4F1EA 100%)`,
+              boxShadow: 'inset 2px 2px 0px rgba(0,0,0,0.1)'
             }}
           />
-          <div className="flex justify-between text-slate-600 text-xs mt-0.5">
-            <span>{xMin + 1}</span>
-            <span className="text-slate-400 font-mono">{dropX.toFixed(1)}</span>
-            <span>{xMax - 1}</span>
+          <div className="flex justify-between text-xs mt-0.5">
+            <span className="text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>{xMin + 1}</span>
+            <span className="text-[#1C1C1C] font-mono" style={{ fontFamily: 'Inter, sans-serif' }}>{dropX.toFixed(1)}</span>
+            <span className="text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>{xMax - 1}</span>
           </div>
         </div>
 
         <button
           onClick={randomizeBucket}
           disabled={running}
-          className={`px-4 py-2.5 rounded-lg text-lg font-bold transition shrink-0 ${
-            running ? 'opacity-50 cursor-not-allowed bg-slate-800 text-slate-500 border border-slate-700' : 'bg-slate-700/50 border border-slate-500/50 text-slate-300 hover:bg-slate-600'
+          className={`px-4 py-2.5 rounded-[8px] text-lg font-bold transition shrink-0 border-2 border-[#1C1C1C] ${
+            running ? 'opacity-50 cursor-not-allowed bg-white text-[#1C1C1C]/50' : 'bg-white text-[#1C1C1C] hover:bg-[#F4F1EA] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1C1C1C]'
           }`}
+          style={{ fontFamily: 'DM Sans, sans-serif', boxShadow: '4px 4px 0px #1C1C1C' }}
           title="Reset Level"
         >
           🔄
@@ -362,20 +332,25 @@ export default function MarbleOverlay({ curveFn, accent }) {
 
         <button
           onClick={running ? resetGame : drop}
-          className={`px-5 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition shrink-0 ${
+          className={`px-5 py-2.5 rounded-[8px] text-xs font-bold uppercase tracking-wider transition shrink-0 border-2 border-[#1C1C1C] ${
             running
-              ? 'bg-red-500/20 border border-red-500/50 text-red-300 hover:bg-red-500/30'
-              : 'bg-gradient-to-r from-amber-500/30 to-orange-500/30 border border-amber-500/50 text-amber-200 hover:from-amber-500/40 hover:to-orange-500/40'
+              ? 'bg-[#CFA8B8] text-[#1C1C1C] hover:bg-[#F59D8A]'
+              : 'bg-[#F59D8A] text-[#1C1C1C] hover:bg-[#CFA8B8] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1C1C1C]'
           }`}
+          style={{ fontFamily: 'DM Sans, sans-serif', boxShadow: '4px 4px 0px #1C1C1C' }}
         >
           {running ? '⏹ Stop' : '🎱 Drop!'}
         </button>
       </div>
 
       <div className="flex items-center justify-between">
-        <span className="text-xs text-slate-500">Attempts: <span className="text-white font-bold">{attempts}</span></span>
+        <span className="text-xs text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>Attempts: <span className="font-bold text-[#F59D8A]">{attempts}</span></span>
         {score && !running && (
-          <span className={`text-xs font-bold ${score.includes('PERFECT') ? 'text-yellow-300' : score.includes('Almost') ? 'text-blue-300' : 'text-slate-400'}`}>
+          <span className={`text-xs font-bold ${
+            score.includes('PERFECT') ? 'text-[#4CAF50]' : 
+            score.includes('Almost') ? 'text-[#A8D5D2]' : 
+            'text-[#1C1C1C]'
+          }`} style={{ fontFamily: 'DM Sans, sans-serif' }}>
             {score}
           </span>
         )}

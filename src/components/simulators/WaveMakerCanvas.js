@@ -16,7 +16,7 @@ export default function WaveMakerCanvas({ values, accent }) {
     plotFunction(ctx, x => A * Math.sin(omega * (x - shiftX) + phi) + shiftY, xMin, xMax, 600, ox, oy, sx, sy, accent, 2.5);
     const period = (2 * Math.PI) / omega;
     labelAt(ctx, `y = ${A.toFixed(2)} · sin(${omega.toFixed(2)}x + ${phi.toFixed(2)})`, 10, 20, accent, 12);
-    labelAt(ctx, `Period: ${period.toFixed(2)}  Amplitude: ${A.toFixed(2)}`, 10, 36, 'rgba(255,255,255,0.4)', 11);
+    labelAt(ctx, `Period: ${period.toFixed(2)}  Amplitude: ${A.toFixed(2)}`, 10, 36, 'rgba(28,28,28,0.6)', 11);
   }, [A, omega, phi, shiftX, shiftY, accent]);
 
   return (

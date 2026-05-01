@@ -16,7 +16,7 @@ export default function BezierCanvas({ values, accent }) {
           p1 = { x: cx + shiftX, y: cy + shiftY }, 
           p2 = { x: 2 + shiftX, y: 1 + shiftY };
     
-    ctx.strokeStyle = 'rgba(255,255,255,0.2)'; 
+    ctx.strokeStyle = 'rgba(28,28,28,0.3)'; 
     ctx.beginPath(); 
     ctx.moveTo(ox + p0.x * s, oy - p0.y * s); 
     ctx.lineTo(ox + p1.x * s, oy - p1.y * s); 

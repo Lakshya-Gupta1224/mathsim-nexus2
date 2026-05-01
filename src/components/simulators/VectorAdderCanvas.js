@@ -37,13 +37,13 @@ export default function VectorAdderCanvas({ values, accent }) {
       ox + (v1x + v2x) * scale, oy - (v1y + v2y) * scale, '#f97316', 2.5);
     arrow(ctx, ox, oy, ox + rx * scale, oy - ry * scale, accent, 3);
 
-    drawDot(ctx, ox, oy, 4, 'rgba(255,255,255,0.3)');
+    drawDot(ctx, ox, oy, 4, 'rgba(28,28,28,0.4)');
     drawDot(ctx, ox + rx * scale, oy - ry * scale, 5, accent);
 
     labelAt(ctx, `V1: |${m1.toFixed(1)}| ∠${a1}°`, 10, 20, '#22d3ee', 12);
     labelAt(ctx, `V2: |${m2.toFixed(1)}| ∠${a2}°`, 10, 38, '#f97316', 12);
     labelAt(ctx, `R: |${rm.toFixed(3)}| ∠${ra.toFixed(1)}°`, 10, 56, accent, 13);
-    labelAt(ctx, `Rx=${rx.toFixed(2)}  Ry=${ry.toFixed(2)}`, 10, 74, 'rgba(255,255,255,0.35)', 11);
+    labelAt(ctx, `Rx=${rx.toFixed(2)}  Ry=${ry.toFixed(2)}`, 10, 74, 'rgba(28,28,28,0.6)', 11);
   }, [m1, a1, m2, a2, accent]);
 
   return (

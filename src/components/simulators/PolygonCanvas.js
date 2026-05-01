@@ -41,13 +41,13 @@ export default function PolygonCanvas({ values, accent }) {
     }
 
     ctx.beginPath(); ctx.arc(cx, cy, 3, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255,255,255,0.2)'; ctx.fill();
+    ctx.fillStyle = 'rgba(28,28,28,0.3)'; ctx.fill();
 
     labelAt(ctx, `${sides}-sided polygon`, 10, 20, accent, 14);
     labelAt(ctx, `Sum of interior angles = ${sumInterior}°`, 10, 40, 'rgba(255,200,0,0.8)', 12);
-    labelAt(ctx, `Each interior angle = ${interiorAngle.toFixed(2)}°`, 10, 58, 'rgba(255,255,255,0.5)', 11);
-    labelAt(ctx, `Each exterior angle = ${exteriorAngle.toFixed(2)}°`, 10, 74, 'rgba(255,255,255,0.4)', 11);
-    labelAt(ctx, `Formula: (n−2)×180°`, 10, 90, 'rgba(255,255,255,0.25)', 10);
+    labelAt(ctx, `Each interior angle = ${interiorAngle.toFixed(2)}°`, 10, 58, 'rgba(28,28,28,0.7)', 11);
+    labelAt(ctx, `Each exterior angle = ${exteriorAngle.toFixed(2)}°`, 10, 74, 'rgba(28,28,28,0.6)', 11);
+    labelAt(ctx, `Formula: (n−2)×180°`, 10, 90, 'rgba(28,28,28,0.5)', 10);
   }, [sides, accent]);
 
   return (

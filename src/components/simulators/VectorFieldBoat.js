@@ -102,7 +102,7 @@ export default function VectorFieldBoat({ values, simulatorId, accent }) {
     const render = (timestamp) => {
       if (!running) return;
       ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = '#0f172a';
+      ctx.fillStyle = '#F8F6F3';
       ctx.fillRect(0, 0, W, H);
 
       // Draw vector field arrows
@@ -160,20 +160,20 @@ export default function VectorFieldBoat({ values, simulatorId, accent }) {
       const gx = toSX(goalX), gy = toSY(goalY), gr = goalR * sx;
       ctx.beginPath();
       ctx.arc(gx, gy, gr, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(34, 197, 94, 0.15)';
+      ctx.fillStyle = 'rgba(76, 175, 80, 0.25)';
       ctx.fill();
-      ctx.strokeStyle = 'rgba(34, 197, 94, 0.6)';
+      ctx.strokeStyle = '#4CAF50';
       ctx.lineWidth = 2;
       ctx.stroke();
-      ctx.fillStyle = 'rgba(34, 197, 94, 0.9)';
-      ctx.font = 'bold 12px monospace';
+      ctx.fillStyle = '#1C1C1C';
+      ctx.font = 'bold 12px DM Sans';
       ctx.textAlign = 'center';
       ctx.fillText('GOAL', gx, gy + 4);
 
       // Draw start marker
       const startPx = toSX(-5), startPy = toSY(0);
-      ctx.fillStyle = 'rgba(255,255,255,0.2)';
-      ctx.font = '10px monospace';
+      ctx.fillStyle = 'rgba(28, 28, 28, 0.6)';
+      ctx.font = '10px Inter';
       ctx.textAlign = 'center';
       ctx.fillText('START', startPx, startPy - 15);
 
@@ -261,41 +261,41 @@ export default function VectorFieldBoat({ values, simulatorId, accent }) {
       ctx.closePath();
       ctx.fillStyle = accent;
       ctx.fill();
-      ctx.strokeStyle = '#ffffff';
+      ctx.strokeStyle = '#1C1C1C';
       ctx.lineWidth = 1;
       ctx.stroke();
       ctx.restore();
 
       // Health bar
-      ctx.fillStyle = 'rgba(0,0,0,0.4)';
+      ctx.fillStyle = 'rgba(28, 28, 28, 0.3)';
       ctx.fillRect(10, H - 24, 100, 14);
-      ctx.fillStyle = boat.health > 50 ? 'rgba(34,197,94,0.8)' : boat.health > 20 ? 'rgba(245,158,11,0.8)' : 'rgba(239,68,68,0.8)';
+      ctx.fillStyle = boat.health > 50 ? '#4CAF50' : boat.health > 20 ? '#F59D8A' : '#CFA8B8';
       ctx.fillRect(10, H - 24, Math.max(0, boat.health), 14);
-      ctx.fillStyle = 'white';
-      ctx.font = '9px monospace';
+      ctx.fillStyle = '#1C1C1C';
+      ctx.font = '9px Inter';
       ctx.textAlign = 'left';
       ctx.fillText(`HP: ${Math.max(0, Math.round(boat.health))}`, 14, H - 14);
 
       // Game state messages
       if (gameState === 'won') {
-        ctx.fillStyle = 'rgba(0,0,0,0.6)';
+        ctx.fillStyle = 'rgba(76, 175, 80, 0.75)';
         ctx.fillRect(0, 0, W, H);
-        ctx.fillStyle = '#22c55e';
-        ctx.font = 'bold 28px monospace';
+        ctx.fillStyle = '#1C1C1C';
+        ctx.font = 'bold 28px DM Sans';
         ctx.textAlign = 'center';
         ctx.fillText('🎉 GOAL REACHED!', W / 2, H / 2);
-        ctx.fillStyle = 'rgba(255,255,255,0.5)';
-        ctx.font = '14px monospace';
+        ctx.fillStyle = 'rgba(28, 28, 28, 0.8)';
+        ctx.font = '14px Inter';
         ctx.fillText('Click Reset to try again', W / 2, H / 2 + 30);
       } else if (gameState === 'lost') {
-        ctx.fillStyle = 'rgba(0,0,0,0.6)';
+        ctx.fillStyle = 'rgba(245, 157, 138, 0.75)';
         ctx.fillRect(0, 0, W, H);
-        ctx.fillStyle = '#ef4444';
-        ctx.font = 'bold 28px monospace';
+        ctx.fillStyle = '#1C1C1C';
+        ctx.font = 'bold 28px DM Sans';
         ctx.textAlign = 'center';
         ctx.fillText('💥 CRASHED!', W / 2, H / 2);
-        ctx.fillStyle = 'rgba(255,255,255,0.5)';
-        ctx.font = '14px monospace';
+        ctx.fillStyle = 'rgba(28, 28, 28, 0.8)';
+        ctx.font = '14px Inter';
         ctx.fillText('Click Reset to try again', W / 2, H / 2 + 30);
       }
 
@@ -308,19 +308,24 @@ export default function VectorFieldBoat({ values, simulatorId, accent }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <canvas ref={canvasRef} className="w-full h-80 rounded-xl block" />
+      <canvas 
+        ref={canvasRef} 
+        className="w-full h-80 rounded-[12px] block border-2 border-[#1C1C1C]" 
+        style={{ background: '#F8F6F3', boxShadow: '4px 4px 0px #1C1C1C' }} 
+      />
       <div className="flex items-center gap-3">
         <button
           onClick={gameState === 'playing' ? resetGame : startGame}
-          className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition ${
+          className={`px-4 py-2 rounded-[8px] text-xs font-bold uppercase tracking-wider transition shrink-0 border-2 border-[#1C1C1C] ${
             gameState === 'playing'
-              ? 'bg-red-500/20 border border-red-500/50 text-red-300'
-              : 'bg-gradient-to-r from-blue-500/30 to-cyan-500/30 border border-blue-500/50 text-blue-200 hover:from-blue-500/40'
+              ? 'bg-[#CFA8B8] text-[#1C1C1C] hover:bg-[#F59D8A]'
+              : 'bg-[#F59D8A] text-[#1C1C1C] hover:bg-[#CFA8B8] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#1C1C1C]'
           }`}
+          style={{ fontFamily: 'DM Sans, sans-serif', boxShadow: '4px 4px 0px #1C1C1C' }}
         >
           {gameState === 'playing' ? 'Reset' : gameState === 'ready' ? '🚤 Start' : '🔄 Retry'}
         </button>
-        <span className="text-xs text-slate-500">
+        <span className="text-xs text-[#1C1C1C]" style={{ fontFamily: 'Inter, sans-serif' }}>
           {gameState === 'ready' ? 'Press Start, then use WASD to navigate' : 
            gameState === 'playing' ? 'Navigate to the green GOAL!' : ''}
         </span>

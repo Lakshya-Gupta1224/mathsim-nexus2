@@ -19,20 +19,20 @@ export default function TangentSlopeCanvas({ values, accent }) {
 
     const xMin = (0 - ox) / s;
     const xMax = (w - ox) / s;
-    plotFunction(ctx, f, xMin, xMax, 400, ox, oy, s, s, 'rgba(255,255,255,0.3)', 1.5);
+    plotFunction(ctx, f, xMin, xMax, 400, ox, oy, s, s, 'rgba(28,28,28,0.4)', 1.5);
     plotFunction(ctx, t => slope * (t - x) + yAt, xMin, xMax, 200, ox, oy, s, s, accent, 2.5);
 
     const px = ox + x * s, py = oy - yAt * s;
     drawDot(ctx, px, py, 6, accent);
 
-    ctx.setLineDash([4, 4]); ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]); ctx.strokeStyle = 'rgba(28,28,28,0.3)'; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, oy); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(ox, py); ctx.stroke();
     ctx.setLineDash([]);
 
-    labelAt(ctx, `f(x) = x²`, 10, 20, 'rgba(255,255,255,0.4)', 12);
+    labelAt(ctx, `f(x) = x²`, 10, 20, 'rgba(28,28,28,0.6)', 12);
     labelAt(ctx, `x = ${x.toFixed(2)}`, 10, 38, accent, 13);
-    labelAt(ctx, `f(x) = ${yAt.toFixed(3)}`, 10, 56, 'rgba(255,255,255,0.5)', 12);
+    labelAt(ctx, `f(x) = ${yAt.toFixed(3)}`, 10, 56, 'rgba(28,28,28,0.7)', 12);
     labelAt(ctx, `f'(x) = 2x = ${slope.toFixed(3)}`, 10, 74, accent, 13);
   }, [x, accent]);
 

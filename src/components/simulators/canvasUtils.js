@@ -1,9 +1,9 @@
 // canvasUtils.js — shared drawing helpers with zoom/pan support
 
-export const DARK_BG = '#0f172a';
-export const GRID_COLOR = 'rgba(255,255,255,0.05)';
-export const AXIS_COLOR = 'rgba(255,255,255,0.2)';
-export const LABEL_COLOR = 'rgba(255,255,255,0.4)';
+export const DARK_BG = '#F8F6F3';
+export const GRID_COLOR = 'rgba(28, 28, 28, 0.1)';
+export const AXIS_COLOR = 'rgba(28, 28, 28, 0.3)';
+export const LABEL_COLOR = 'rgba(28, 28, 28, 0.6)';
 
 export function clearCanvas(ctx, w, h) {
   ctx.clearRect(0, 0, w, h);

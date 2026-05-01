@@ -16,7 +16,7 @@ export default function TangentVisCanvas({ values, accent }) {
     drawAxes(ctx, w, h, cx, cy);
 
     ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.strokeStyle = 'rgba(28,28,28,0.3)'; ctx.lineWidth = 1.5; ctx.stroke();
 
     const px = cx + r * Math.cos(rad), py = cy - r * Math.sin(rad);
 
@@ -30,19 +30,19 @@ export default function TangentVisCanvas({ values, accent }) {
       ctx.strokeStyle = '#f97316'; ctx.lineWidth = 2.5; ctx.stroke();
 
       ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(tx, tanPy);
-      ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1; ctx.stroke();
+      ctx.strokeStyle = 'rgba(28,28,28,0.3)'; ctx.lineWidth = 1; ctx.stroke();
 
       ctx.beginPath(); ctx.moveTo(tx, 0); ctx.lineTo(tx, h);
-      ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1; ctx.stroke();
+      ctx.strokeStyle = 'rgba(28,28,28,0.2)'; ctx.lineWidth = 1; ctx.stroke();
 
       drawDot(ctx, tx, tanPy, 5, '#f97316');
     }
     drawDot(ctx, px, py, 5, accent);
-    drawDot(ctx, cx, cy, 3, 'rgba(255,255,255,0.3)');
+    drawDot(ctx, cx, cy, 3, 'rgba(28,28,28,0.4)');
 
     labelAt(ctx, `θ = ${theta}°`, 10, 20, 'rgba(255,200,0,0.9)', 13);
     labelAt(ctx, `tan(θ) = ${Math.abs(tanV) < 20 ? tanV.toFixed(4) : '±∞'}`, 10, 38, '#f97316', 12);
-    labelAt(ctx, `Orange segment = geometric tangent`, 10, 56, 'rgba(255,255,255,0.3)', 10);
+    labelAt(ctx, `Orange segment = geometric tangent`, 10, 56, 'rgba(28,28,28,0.6)', 10);
   }, [theta, accent]);
 
   return (

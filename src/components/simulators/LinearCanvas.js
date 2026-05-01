@@ -15,8 +15,8 @@ export default function LinearCanvas({ values, accent }) {
     const xMax = (w - ox) / s;
     plotFunction(ctx, x => m * (x - shiftX) + c + shiftY, xMin, xMax, 300, ox, oy, s, s, accent, 2.5);
     labelAt(ctx, `y = ${m.toFixed(2)}x + ${c.toFixed(2)}`, 10, 20, accent, 13);
-    labelAt(ctx, `slope = ${m.toFixed(2)}`, 10, 38, 'rgba(255,255,255,0.5)', 11);
-    labelAt(ctx, `y-int = ${c.toFixed(2)}`, 10, 54, 'rgba(255,255,255,0.5)', 11);
+    labelAt(ctx, `slope = ${m.toFixed(2)}`, 10, 38, 'rgba(28, 28, 28, 0.6)', 11);
+    labelAt(ctx, `y-int = ${c.toFixed(2)}`, 10, 54, 'rgba(28, 28, 28, 0.6)', 11);
   }, [m, c, shiftX, shiftY, accent]);
 
   return (

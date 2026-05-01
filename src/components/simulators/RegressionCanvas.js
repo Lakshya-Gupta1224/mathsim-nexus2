@@ -53,7 +53,7 @@ export default function RegressionCanvas({ values, accent }) {
 
     labelAt(ctx, `ŷ = ${mReg.toFixed(3)}x + ${bReg.toFixed(3)}`, 10, 20, accent, 13);
     labelAt(ctx, `R² = ${r2.toFixed(4)}`, 10, 38, 'rgba(255,200,0,0.9)', 12);
-    labelAt(ctx, `r (set) = ${corr.toFixed(2)}  noise = ${noise.toFixed(2)}`, 10, 56, 'rgba(255,255,255,0.35)', 11);
+    labelAt(ctx, `r (set) = ${corr.toFixed(2)}  noise = ${noise.toFixed(2)}`, 10, 56, 'rgba(28,28,28,0.6)', 11);
   }, [points, mReg, bReg, r2, accent]);
 
   return (

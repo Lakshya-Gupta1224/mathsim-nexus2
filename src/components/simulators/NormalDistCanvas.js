@@ -35,21 +35,21 @@ export default function NormalDistCanvas({ values, accent }) {
     const xMax = (w - ox) / sx;
     plotFunction(ctx, f, xMin, xMax, 500, ox, oy, sx, sy, accent, 2.5);
 
-    ctx.setLineDash([5, 5]); ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1;
+    ctx.setLineDash([5, 5]); ctx.strokeStyle = 'rgba(28,28,28,0.3)'; ctx.lineWidth = 1;
     const mux = ox + mu * sx;
     ctx.beginPath(); ctx.moveTo(mux, 0); ctx.lineTo(mux, h); ctx.stroke();
     ctx.setLineDash([]);
 
     [-1, 1, -2, 2].forEach(k => {
       const lx = ox + (mu + k * sigma) * sx;
-      ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(28,28,28,0.15)'; ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(lx, 0); ctx.lineTo(lx, h); ctx.stroke();
-      labelAt(ctx, `${k}σ`, lx - 6, oy + 14, 'rgba(255,255,255,0.3)', 9);
+      labelAt(ctx, `${k}σ`, lx - 6, oy + 14, 'rgba(28,28,28,0.6)', 9);
     });
 
     labelAt(ctx, `μ = ${mu.toFixed(2)},  σ = ${sigma.toFixed(2)}`, 10, 20, accent, 13);
-    labelAt(ctx, `Peak = ${f(mu).toFixed(4)}`, 10, 38, 'rgba(255,255,255,0.5)', 11);
-    labelAt(ctx, `68% within ±1σ   95% within ±2σ`, 10, 54, 'rgba(255,255,255,0.3)', 10);
+    labelAt(ctx, `Peak = ${f(mu).toFixed(4)}`, 10, 38, 'rgba(28,28,28,0.7)', 11);
+    labelAt(ctx, `68% within ±1σ   95% within ±2σ`, 10, 54, 'rgba(28,28,28,0.6)', 10);
   }, [mu, sigma, accent]);
 
   return (

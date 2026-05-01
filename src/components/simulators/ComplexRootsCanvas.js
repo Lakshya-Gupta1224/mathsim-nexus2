@@ -12,7 +12,7 @@ export default function ComplexRootsCanvas({ values, accent }) {
     drawGrid(ctx, w, h, s, s, ox, oy, 1);
     drawAxes(ctx, w, h, ox, oy);
     
-    ctx.strokeStyle = 'rgba(255,255,255,0.2)'; 
+    ctx.strokeStyle = 'rgba(28,28,28,0.3)'; 
     ctx.beginPath(); 
     ctx.arc(ox, oy, s, 0, Math.PI * 2); 
     ctx.stroke();
