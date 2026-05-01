@@ -1,6 +1,6 @@
 // Lorenz3DCanvas.js — Interactive 3D Lorenz attractor with time scrubbing
 import React, { useRef, useMemo, useState, useEffect, useCallback } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
 import * as THREE from 'three';
 
@@ -27,7 +27,6 @@ function AttractorTrail({ sigma, rho, beta, maxSteps, currentStep, accent }) {
 
   // Create gradient colors
   const colors = useMemo(() => {
-    const accentColor = new THREE.Color(accent);
     const startColor = new THREE.Color('#ffdaa2');
     const midColor = new THREE.Color('#F59D8A');
     const endColor = new THREE.Color('#1C1C1C');
