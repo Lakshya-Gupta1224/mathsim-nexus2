@@ -37,6 +37,7 @@ import EpicycleCanvas from './simulators/EpicycleCanvas';
 // 3D WebGL Simulators
 import TopographyCanvas from './simulators/TopographyCanvas';
 import Lorenz3DCanvas from './simulators/Lorenz3DCanvas';
+import GradientDescent3DCanvas from './simulators/GradientDescent3DCanvas';
 
 const MAP = {
   linear: LinearCanvas, parabola: ParabolaCanvas, polynomial: PolynomialCanvas,
@@ -54,7 +55,7 @@ const MAP = {
   epicycle: EpicycleCanvas,
 
   // 3D WebGL
-  topography: TopographyCanvas, lorenz3d: Lorenz3DCanvas,
+  topography: TopographyCanvas, lorenz3d: Lorenz3DCanvas, gradientdescent3d: GradientDescent3DCanvas,
 };
 
 export default function SimulatorCanvas({ simulator, values }) {

@@ -140,7 +140,7 @@ export default function Dashboard({ user, onLogout, onOpenSimulator }) {
               />
               <StatCard
                 label="Sims Explored"
-                value={`${Object.keys(mastery).length} / 20`}
+                value={`${Object.keys(mastery).length} / 33`}
                 accent="#f59e0b"
               />
 
